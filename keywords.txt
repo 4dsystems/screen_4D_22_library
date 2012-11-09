@@ -1,0 +1,56 @@
+# Syntax Colouring Map for screen_4D_22_library
+# ----------------
+
+# Datatypes (KEYWORD1)
+# ----------------
+
+screen22	KEYWORD1
+
+
+# Methods and Functions (KEYWORD2)
+# ----------------
+
+getTouch	KEYWORD2
+maxX	KEYWORD2
+maxY	KEYWORD2
+setColour	KEYWORD2
+fontX	KEYWORD2
+fontY	KEYWORD2
+getOrientation	KEYWORD2
+begin	KEYWORD2
+circle	KEYWORD2
+clear	KEYWORD2
+invert	KEYWORD2
+line	KEYWORD2
+point	KEYWORD2
+rectangle	KEYWORD2
+setBackGroundColour	KEYWORD2
+setBacklight	KEYWORD2
+setDisplay	KEYWORD2
+setOrientation	KEYWORD2
+solidCircle	KEYWORD2
+solidRectangle	KEYWORD2
+splitColour	KEYWORD2
+text	KEYWORD2
+
+
+# Constants (LITERAL1)
+# ----------------
+
+blackColour	LITERAL1
+whiteColour	LITERAL1
+redColour	LITERAL1
+greenColour	LITERAL1
+blueColour	LITERAL1
+yellowColour	LITERAL1
+cyanColour	LITERAL1
+orangeColour	LITERAL1
+magentaColour	LITERAL1
+violetColour	LITERAL1
+grayColour	LITERAL1
+
+# Enums (LITERAL2)
+# ----------------
+
+_4DSHIELD22	LITERAL1
+_4DLCDM22	LITERAL1
