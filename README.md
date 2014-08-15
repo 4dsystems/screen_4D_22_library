@@ -13,7 +13,7 @@ ILI9341 driver.
 <img src="https://raw.githubusercontent.com/JohanCronje/TFT_22_ILI9225/master/images/ILI9225_TFT_back.jpg" alt="Back" width="300">
 
 To install the library:
-* Click the **Download ZIP** button on the right to download **Adafruit_ILI9225-master.zip**
+* Click the **Download ZIP** button on the right to download **TFT_22_ILI9225-master.zip**
 * Extract the ZIP file to the library folder your *arduinosketchfolder*/libraries/ folder. You may need to create the libraries subfolder if it's your first library.
-* Rename the uncompressed folder from **Adafruit_ILI9225-master** to **Adafruit_ILI9225**
+* Rename the uncompressed folder from **TFT_22_ILI9225-master** to **TFT_22_ILI9225**
 * Restart the Arduino IDE
