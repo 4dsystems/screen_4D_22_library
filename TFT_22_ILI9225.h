@@ -239,9 +239,28 @@ class TFT_22_ILI9225 {
 		/// @param	blue blue component, 0x00..0xff
 		void splitColor(uint16_t rgb, uint8_t &red, uint8_t &green, uint8_t &blue);
 
+		/// Draw triangle, triangle coordinates
+		/// @param	x1 corner 1 coordinate, x-axis
+		/// @param	y1 corner 1 coordinate, y-axis
+		/// @param	x2 corner 2 coordinate, x-axis
+		/// @param	y2 corner 2 coordinate, y-axis
+		/// @param	x3 corner 3 coordinate, x-axis
+		/// @param	y3 corner 3 coordinate, y-axis
+		/// @param	color 16-bit color
+		void drawTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color); 
+
+		/// Draw solid triangle, triangle coordinates
+		/// @param	x1 corner 1 coordinate, x-axis
+		/// @param	y1 corner 1 coordinate, y-axis
+		/// @param	x2 corner 2 coordinate, x-axis
+		/// @param	y2 corner 2 coordinate, y-axis
+		/// @param	x3 corner 3 coordinate, x-axis
+		/// @param	y3 corner 3 coordinate, y-axis
+		/// @param	color 16-bit color
+		void fillTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color);
 
 	private:
-		void	 _swop(uint16_t &a, uint16_t &b),
+		void	 _swap(uint16_t &a, uint16_t &b),
 				 _setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1),
 				 _orientCoordinates(uint16_t &x1, uint16_t &y1),
 				 _writeRegister(uint16_t reg, uint16_t data),

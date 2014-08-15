@@ -30,7 +30,7 @@ void TFT_22_ILI9225::_orientCoordinates(uint16_t &x1, uint16_t &y1) {
 		break;
 	case 1: // ok
 		y1 = _maxY - y1 -1;
-		_swop(x1, y1);
+		_swap(x1, y1);
 		break;
 	case 2: // ok
 		x1 = _maxX - x1 -1;
@@ -38,7 +38,7 @@ void TFT_22_ILI9225::_orientCoordinates(uint16_t &x1, uint16_t &y1) {
 		break;
 	case 3: // ok
 		x1 = _maxX - x1 -1;
-		_swop(x1, y1);
+		_swap(x1, y1);
 		break;
 	}
 }
@@ -48,8 +48,8 @@ void TFT_22_ILI9225::_setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t 
 	_orientCoordinates(x0, y0);
 	_orientCoordinates(x1, y1);
 
-	if (x1<x0) _swop(x0, x1);
-	if (y1<y0) _swop(y0, y1);
+	if (x1<x0) _swap(x0, x1);
+	if (y1<y0) _swap(y0, y1);
 
 	_writeRegister(ILI9225_HORIZONTAL_WINDOW_ADDR1,x1);
 	_writeRegister(ILI9225_HORIZONTAL_WINDOW_ADDR2,x0);
@@ -313,13 +313,13 @@ void TFT_22_ILI9225::drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2
 	int16_t dx, dy;
 
 	if (steep) {
-		_swop(x1, y1);
-		_swop(x2, y2);
+		_swap(x1, y1);
+		_swap(x2, y2);
 	}
 
 	if (x1 > x2) {
-		_swop(x1, x2);
-		_swop(y1, y2);
+		_swap(x1, x2);
+		_swap(y1, y2);
 	}
 
 	dx = x2 - x1;
@@ -422,7 +422,7 @@ void TFT_22_ILI9225::splitColor(uint16_t rgb, uint8_t &red, uint8_t &green, uint
 }
 
 
-void TFT_22_ILI9225::_swop(uint16_t &a, uint16_t &b) {
+void TFT_22_ILI9225::_swap(uint16_t &a, uint16_t &b) {
 	uint16_t w = a;
 	a = b;
 	b = w;
@@ -450,4 +450,84 @@ void TFT_22_ILI9225::_writeData(uint8_t HI, uint8_t LO) {
 void TFT_22_ILI9225::_writeRegister(uint16_t reg, uint16_t data) {
 	_writeCommand(reg >> 8, reg & 255);
 	_writeData(data >> 8, data & 255);
+}
+
+void TFT_22_ILI9225::drawTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color) {
+	drawLine(x1, y1, x2, y2, color);
+	drawLine(x2, y2, x3, y3, color);
+	drawLine(x3, y3, x1, y1, color);
+}
+
+void TFT_22_ILI9225::fillTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color) {
+
+  uint16_t a, b, y, last;
+
+  // Sort coordinates by Y order (y3 >= y2 >= y1)
+  if (y1 > y2) {
+    _swap(y1, y2); _swap(x1, x2);
+  }
+  if (y2 > y3) {
+    _swap(y3, y2); _swap(x3, x2);
+  }
+  if (y1 > y2) {
+    _swap(y1, y2); _swap(x1, x2);
+  }
+
+  if (y1 == y3) { // Handle awkward all-on-same-line case as its own thing
+    a = b = x1;
+    if (x2 < a)      a = x2;
+    else if (x2 > b) b = x2;
+    if (x3 < a)      a = x3;
+    else if (x3 > b) b = x3;
+  	drawLine(a, y1, b, y1, color);
+    return;
+  }
+
+  uint16_t dx11 = x2 - x1,
+           dy11 = y2 - y1,
+           dx12 = x3 - x1,
+           dy12 = y3 - y1,
+           dx22 = x3 - x2,
+           dy22 = y3 - y2,
+           sa   = 0,
+           sb   = 0;
+
+  // For upper part of triangle, find scanline crossings for segments
+  // 0-1 and 0-2.  If y2=y3 (flat-bottomed triangle), the scanline y2
+  // is included here (and second loop will be skipped, avoiding a /0
+  // error there), otherwise scanline y2 is skipped here and handled
+  // in the second loop...which also avoids a /0 error here if y1=y2
+  // (flat-topped triangle).
+  if (y2 == y3) last = y2;   // Include y2 scanline
+  else          last = y2 - 1; // Skip it
+
+  for (y = y1; y <= last; y++) {
+    a   = x1 + sa / dy11;
+    b   = x1 + sb / dy12;
+    sa += dx11;
+    sb += dx12;
+    /* longhand:
+    a = x1 + (x2 - x1) * (y - y1) / (y2 - y1);
+    b = x1 + (x3 - x1) * (y - y1) / (y3 - y1);
+    */
+    if (a > b) _swap(a,b);
+  	drawLine(a, y, b, y, color);
+  }
+
+  // For lower part of triangle, find scanline crossings for segments
+  // 0-2 and 1-2.  This loop is skipped if y2=y3.
+  sa = dx22 * (y - y2);
+  sb = dx12 * (y - y1);
+  for (; y<=y3; y++) {
+    a   = x2 + sa / dy22;
+    b   = x1 + sb / dy12;
+    sa += dx22;
+    sb += dx12;
+    /* longhand:
+    a = x2 + (x3 - x2) * (y - y2) / (y3 - y2);
+    b = x1 + (x3 - x1) * (y - y1) / (y3 - y1);
+    */
+    if (a > b) _swap(a,b);
+  	drawLine(a, y, b, y, color);
+  }
 }
