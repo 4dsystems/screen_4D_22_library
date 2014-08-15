@@ -1,24 +1,19 @@
-![image](http://www.4dsystems.com.au/imagenes/header.png)
+TFT_22_ILI9225
+==============
 
-Screen_4D_22_Library
-====================
+This is a library for the ILI9225 TFT display products, forked from the screen_4D_22_library library.
 
-4D Systems Arduino Library for Arduino Shields/Modules using the 2.2" SPI Display
+### DO NOT USE - STILL IN ACTIVE DEVELOPMENT ###
 
-## Screens
+This library works with the ILI9225 based 2.2" 176x220 TFT LCD shields commonly found on eBay. Note
+that there is a commonly available 2.2" 240x320 TFT module very similar in appearance but using the
+ILI9341 driver.
 
-Currently this library is compatible with the following 4D Displays:
+<img src="https://github.com/JohanCronje/Adafruit_ILI9225/raw/master/images/ILI9225_TFT_front.jpg" alt="Front" width="300">
+<img src="https://github.com/JohanCronje/Adafruit_ILI9225/raw/master/images/ILI9225_TFT_back.jpg" alt="Back" width="300">
 
-* 4Display-Shield-22 - 2.2" SPI Display Arduino Shield.
- 
-* 4DLCDM-22 - 2.2" SPI Display Arduino Mini Shield and Breakout Board
-
-## Installation
-
-Library should be placed in the C:\Users\(User name)\My Documents\Arduino\Libraries\ folder, or equivalent.
-
-For more information on the installation, please refer to [Installing Additional Arduino Libraries](http://arduino.cc/en/Guide/Libraries).
-
-## Example Sketch
-
-Please compile and load the example sketch into your Arduino/Arduino Mini to view the demo program, utilising the Arduino Library.
+To install the library:
+* Click the **Download ZIP** button on the right to download **Adafruit_ILI9225-master.zip**
+* Extract the ZIP file to the library folder your *arduinosketchfolder*/libraries/ folder. You may need to create the libraries subfolder if it's your first library.
+* Rename the uncompressed folder from **Adafruit_ILI9225-master** to **Adafruit_ILI9225**
+* Restart the Arduino IDE
