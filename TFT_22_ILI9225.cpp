@@ -51,14 +51,14 @@ void TFT_22_ILI9225::_setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t 
 	if (x1<x0) _swop(x0, x1);
 	if (y1<y0) _swop(y0, y1);
 
-	_writeDisplay(ILI9225_HORIZONTAL_WINDOW_ADDR1,x1);
-	_writeDisplay(ILI9225_HORIZONTAL_WINDOW_ADDR2,x0);
+	_writeRegister(ILI9225_HORIZONTAL_WINDOW_ADDR1,x1);
+	_writeRegister(ILI9225_HORIZONTAL_WINDOW_ADDR2,x0);
 
-	_writeDisplay(ILI9225_VERTICAL_WINDOW_ADDR1,y1);
-	_writeDisplay(ILI9225_VERTICAL_WINDOW_ADDR2,y0);
+	_writeRegister(ILI9225_VERTICAL_WINDOW_ADDR1,y1);
+	_writeRegister(ILI9225_VERTICAL_WINDOW_ADDR2,y0);
 
-	_writeDisplay(ILI9225_RAM_ADDR_SET1,x0);
-	_writeDisplay(ILI9225_RAM_ADDR_SET2,y0);
+	_writeRegister(ILI9225_RAM_ADDR_SET1,x0);
+	_writeRegister(ILI9225_RAM_ADDR_SET2,y0);
 
 	_writeCommand(0x00, 0x22);
 }
@@ -70,9 +70,9 @@ void TFT_22_ILI9225::begin() {
   pinMode(_rs, OUTPUT);
   pinMode(_cs, OUTPUT);
   pinMode(_rst, OUTPUT);
-  pinMode(_led, OUTPUT);
+  if (_led) pinMode(_led, OUTPUT);
 
-  if(hwSPI) { // Using hardware SPI
+  if (hwSPI) { // Using hardware SPI
     SPI.begin();
     SPI.setClockDivider(SPI_CLOCK_DIV2); // 4 MHz (half speed)
     //SPI.setClockDivider(SPI_CLOCK_DIV4); // 4 MHz (half speed)
@@ -84,7 +84,7 @@ void TFT_22_ILI9225::begin() {
   }
 
   // Turn on backlight
-  digitalWrite(_led, HIGH);
+  if (_led) digitalWrite(_led, HIGH);
 
   // Initialization Code
 	digitalWrite(_rst, 1); // Pull the reset pin high to release the ILI9225C from the reset status
@@ -96,62 +96,62 @@ void TFT_22_ILI9225::begin() {
 
   /* Start Initial Sequence */
   /* Set SS bit and direction output from S528 to S1 */
-	_writeDisplay(ILI9225_POWER_CTRL1, 0x0000); // Set SAP,DSTB,STB
-	_writeDisplay(ILI9225_POWER_CTRL2, 0x0000); // Set APON,PON,AON,VCI1EN,VC
-	_writeDisplay(ILI9225_POWER_CTRL3, 0x0000); // Set BT,DC1,DC2,DC3
-	_writeDisplay(ILI9225_POWER_CTRL4, 0x0000); // Set GVDD
-	_writeDisplay(ILI9225_POWER_CTRL5, 0x0000); // Set VCOMH/VCOML voltage
+	_writeRegister(ILI9225_POWER_CTRL1, 0x0000); // Set SAP,DSTB,STB
+	_writeRegister(ILI9225_POWER_CTRL2, 0x0000); // Set APON,PON,AON,VCI1EN,VC
+	_writeRegister(ILI9225_POWER_CTRL3, 0x0000); // Set BT,DC1,DC2,DC3
+	_writeRegister(ILI9225_POWER_CTRL4, 0x0000); // Set GVDD
+	_writeRegister(ILI9225_POWER_CTRL5, 0x0000); // Set VCOMH/VCOML voltage
 	delay(40); 
 
 	// Power-on sequence
-	_writeDisplay(ILI9225_POWER_CTRL2, 0x0018); // Set APON,PON,AON,VCI1EN,VC
-	_writeDisplay(ILI9225_POWER_CTRL3, 0x6121); // Set BT,DC1,DC2,DC3
-	_writeDisplay(ILI9225_POWER_CTRL4, 0x006F); // Set GVDD   /*007F 0088 */
-	_writeDisplay(ILI9225_POWER_CTRL5, 0x495F); // Set VCOMH/VCOML voltage
-	_writeDisplay(ILI9225_POWER_CTRL1, 0x0800); // Set SAP,DSTB,STB
+	_writeRegister(ILI9225_POWER_CTRL2, 0x0018); // Set APON,PON,AON,VCI1EN,VC
+	_writeRegister(ILI9225_POWER_CTRL3, 0x6121); // Set BT,DC1,DC2,DC3
+	_writeRegister(ILI9225_POWER_CTRL4, 0x006F); // Set GVDD   /*007F 0088 */
+	_writeRegister(ILI9225_POWER_CTRL5, 0x495F); // Set VCOMH/VCOML voltage
+	_writeRegister(ILI9225_POWER_CTRL1, 0x0800); // Set SAP,DSTB,STB
 	delay(10);
-	_writeDisplay(ILI9225_POWER_CTRL2, 0x103B); // Set APON,PON,AON,VCI1EN,VC
+	_writeRegister(ILI9225_POWER_CTRL2, 0x103B); // Set APON,PON,AON,VCI1EN,VC
 	delay(50);
 
-	_writeDisplay(ILI9225_DRIVER_OUTPUT_CTRL, 0x011C); // set the display line number and display direction
-	_writeDisplay(ILI9225_LCD_AC_DRIVING_CTRL, 0x0100); // set 1 line inversion
-	_writeDisplay(ILI9225_ENTRY_MODE, 0x1030); // set GRAM write direction and BGR=1.
-	_writeDisplay(ILI9225_DISP_CTRL1, 0x0000); // Display off
-	_writeDisplay(ILI9225_BLANK_PERIOD_CTRL1, 0x0808); // set the back porch and front porch
-	_writeDisplay(ILI9225_FRAME_CYCLE_CTRL, 0x1100); // set the clocks number per line
-	_writeDisplay(ILI9225_INTERFACE_CTRL, 0x0000); // CPU interface
-	_writeDisplay(ILI9225_OSC_CTRL, 0x0D01); // Set Osc  /*0e01*/
-	_writeDisplay(ILI9225_VCI_RECYCLING, 0x0020); // Set VCI recycling
-	_writeDisplay(ILI9225_RAM_ADDR_SET1, 0x0000); // RAM Address
-	_writeDisplay(ILI9225_RAM_ADDR_SET2, 0x0000); // RAM Address
+	_writeRegister(ILI9225_DRIVER_OUTPUT_CTRL, 0x011C); // set the display line number and display direction
+	_writeRegister(ILI9225_LCD_AC_DRIVING_CTRL, 0x0100); // set 1 line inversion
+	_writeRegister(ILI9225_ENTRY_MODE, 0x1030); // set GRAM write direction and BGR=1.
+	_writeRegister(ILI9225_DISP_CTRL1, 0x0000); // Display off
+	_writeRegister(ILI9225_BLANK_PERIOD_CTRL1, 0x0808); // set the back porch and front porch
+	_writeRegister(ILI9225_FRAME_CYCLE_CTRL, 0x1100); // set the clocks number per line
+	_writeRegister(ILI9225_INTERFACE_CTRL, 0x0000); // CPU interface
+	_writeRegister(ILI9225_OSC_CTRL, 0x0D01); // Set Osc  /*0e01*/
+	_writeRegister(ILI9225_VCI_RECYCLING, 0x0020); // Set VCI recycling
+	_writeRegister(ILI9225_RAM_ADDR_SET1, 0x0000); // RAM Address
+	_writeRegister(ILI9225_RAM_ADDR_SET2, 0x0000); // RAM Address
 
   /* Set GRAM area */
-	_writeDisplay(ILI9225_GATE_SCAN_CTRL, 0x0000); 
-	_writeDisplay(ILI9225_VERTICAL_SCROLL_CTRL1, 0x00DB); 
-	_writeDisplay(ILI9225_VERTICAL_SCROLL_CTRL2, 0x0000); 
-	_writeDisplay(ILI9225_VERTICAL_SCROLL_CTRL3, 0x0000); 
-	_writeDisplay(ILI9225_PARTIAL_DRIVING_POS1, 0x00DB); 
-	_writeDisplay(ILI9225_PARTIAL_DRIVING_POS2, 0x0000); 
-	_writeDisplay(ILI9225_HORIZONTAL_WINDOW_ADDR1, 0x00AF); 
-	_writeDisplay(ILI9225_HORIZONTAL_WINDOW_ADDR2, 0x0000); 
-	_writeDisplay(ILI9225_VERTICAL_WINDOW_ADDR1, 0x00DB); 
-	_writeDisplay(ILI9225_VERTICAL_WINDOW_ADDR2, 0x0000); 
+	_writeRegister(ILI9225_GATE_SCAN_CTRL, 0x0000); 
+	_writeRegister(ILI9225_VERTICAL_SCROLL_CTRL1, 0x00DB); 
+	_writeRegister(ILI9225_VERTICAL_SCROLL_CTRL2, 0x0000); 
+	_writeRegister(ILI9225_VERTICAL_SCROLL_CTRL3, 0x0000); 
+	_writeRegister(ILI9225_PARTIAL_DRIVING_POS1, 0x00DB); 
+	_writeRegister(ILI9225_PARTIAL_DRIVING_POS2, 0x0000); 
+	_writeRegister(ILI9225_HORIZONTAL_WINDOW_ADDR1, 0x00AF); 
+	_writeRegister(ILI9225_HORIZONTAL_WINDOW_ADDR2, 0x0000); 
+	_writeRegister(ILI9225_VERTICAL_WINDOW_ADDR1, 0x00DB); 
+	_writeRegister(ILI9225_VERTICAL_WINDOW_ADDR2, 0x0000); 
 
   /* Set GAMMA curve */
-	_writeDisplay(ILI9225_GAMMA_CTRL1, 0x0000); 
-	_writeDisplay(ILI9225_GAMMA_CTRL2, 0x0808); 
-	_writeDisplay(ILI9225_GAMMA_CTRL3, 0x080A); 
-	_writeDisplay(ILI9225_GAMMA_CTRL4, 0x000A); 
-	_writeDisplay(ILI9225_GAMMA_CTRL5, 0x0A08); 
-	_writeDisplay(ILI9225_GAMMA_CTRL6, 0x0808); 
-	_writeDisplay(ILI9225_GAMMA_CTRL7, 0x0000); 
-	_writeDisplay(ILI9225_GAMMA_CTRL8, 0x0A00); 
-	_writeDisplay(ILI9225_GAMMA_CTRL9, 0x0710); 
-	_writeDisplay(ILI9225_GAMMA_CTRL10, 0x0710); 
+	_writeRegister(ILI9225_GAMMA_CTRL1, 0x0000); 
+	_writeRegister(ILI9225_GAMMA_CTRL2, 0x0808); 
+	_writeRegister(ILI9225_GAMMA_CTRL3, 0x080A); 
+	_writeRegister(ILI9225_GAMMA_CTRL4, 0x000A); 
+	_writeRegister(ILI9225_GAMMA_CTRL5, 0x0A08); 
+	_writeRegister(ILI9225_GAMMA_CTRL6, 0x0808); 
+	_writeRegister(ILI9225_GAMMA_CTRL7, 0x0000); 
+	_writeRegister(ILI9225_GAMMA_CTRL8, 0x0A00); 
+	_writeRegister(ILI9225_GAMMA_CTRL9, 0x0710); 
+	_writeRegister(ILI9225_GAMMA_CTRL10, 0x0710); 
 
-	_writeDisplay(ILI9225_DISP_CTRL1, 0x0012); 
+	_writeRegister(ILI9225_DISP_CTRL1, 0x0012); 
 	delay(50); 
-	_writeDisplay(ILI9225_DISP_CTRL1, 0x1017);
+	_writeRegister(ILI9225_DISP_CTRL1, 0x1017);
 
 	setBacklight(true);
 	setOrientation(0);
@@ -163,7 +163,7 @@ void TFT_22_ILI9225::begin() {
 void TFT_22_ILI9225::clear() {
 	uint8_t old = _orientation;
 	setOrientation(0);
-	solidRectangle(0, 0, _maxX - 1, _maxY - 1, COLOR_BLACK);
+	fillRectangle(0, 0, _maxX - 1, _maxY - 1, COLOR_BLACK);
 	setOrientation(old);
 	delay(10);
 }
@@ -175,22 +175,22 @@ void TFT_22_ILI9225::invert(boolean flag) {
 
 
 void TFT_22_ILI9225::setBacklight(boolean flag) {
-	digitalWrite(_led, flag);
+	if (_led) digitalWrite(_led, flag);
 }
 
 
 void TFT_22_ILI9225::setDisplay(boolean flag) {
 	if (flag) {
-		_writeDisplay(0x00ff, 0x0000);
-		_writeDisplay(ILI9225_POWER_CTRL1, 0x0000);
+		_writeRegister(0x00ff, 0x0000);
+		_writeRegister(ILI9225_POWER_CTRL1, 0x0000);
 		delay(50);
-		_writeDisplay(ILI9225_DISP_CTRL1, 0x1017);
+		_writeRegister(ILI9225_DISP_CTRL1, 0x1017);
 		delay(200);
 	} else {
-		_writeDisplay(0x00ff, 0x0000);
-		_writeDisplay(ILI9225_DISP_CTRL1, 0x0000);
+		_writeRegister(0x00ff, 0x0000);
+		_writeRegister(ILI9225_DISP_CTRL1, 0x0000);
 		delay(50);
-		_writeDisplay(ILI9225_POWER_CTRL1, 0x0003);
+		_writeRegister(ILI9225_POWER_CTRL1, 0x0003);
 		delay(200);
 	}
 }
@@ -226,15 +226,15 @@ uint8_t TFT_22_ILI9225::getOrientation() {
 }
 
 
-void TFT_22_ILI9225::rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
-	line(x1, y1, x1, y2, color);
-	line(x1, y1, x2, y1, color);
-	line(x1, y2, x2, y2, color);
-	line(x2, y1, x2, y2, color);
+void TFT_22_ILI9225::drawRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
+	drawLine(x1, y1, x1, y2, color);
+	drawLine(x1, y1, x2, y1, color);
+	drawLine(x1, y2, x2, y2, color);
+	drawLine(x2, y1, x2, y2, color);
 }
 
 
-void TFT_22_ILI9225::solidRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
+void TFT_22_ILI9225::fillRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
 
 	_setWindow(x1, y1, x2, y2);
 
@@ -243,7 +243,7 @@ void TFT_22_ILI9225::solidRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint1
 }
 
 
-void TFT_22_ILI9225::circle(uint16_t x0, uint16_t y0, uint16_t r, uint16_t color) {
+void TFT_22_ILI9225::drawCircle(uint16_t x0, uint16_t y0, uint16_t r, uint16_t color) {
 
 	int16_t f = 1 - r;
 	int16_t ddF_x = 1;
@@ -251,10 +251,10 @@ void TFT_22_ILI9225::circle(uint16_t x0, uint16_t y0, uint16_t r, uint16_t color
 	int16_t x = 0;
 	int16_t y = r;
 
-	point(x0, y0 + r, color);
-	point(x0, y0-  r, color);
-	point(x0 + r, y0, color);
-	point(x0 - r, y0, color);
+	drawPixel(x0, y0 + r, color);
+	drawPixel(x0, y0-  r, color);
+	drawPixel(x0 + r, y0, color);
+	drawPixel(x0 - r, y0, color);
 
 	while (x<y) {
 		if (f >= 0) {
@@ -266,19 +266,19 @@ void TFT_22_ILI9225::circle(uint16_t x0, uint16_t y0, uint16_t r, uint16_t color
 		ddF_x += 2;
 		f += ddF_x;
 
-		point(x0 + x, y0 + y, color);
-		point(x0 - x, y0 + y, color);
-		point(x0 + x, y0 - y, color);
-		point(x0 - x, y0 - y, color);
-		point(x0 + y, y0 + x, color);
-		point(x0 - y, y0 + x, color);
-		point(x0 + y, y0 - x, color);
-		point(x0 - y, y0 - x, color);
+		drawPixel(x0 + x, y0 + y, color);
+		drawPixel(x0 - x, y0 + y, color);
+		drawPixel(x0 + x, y0 - y, color);
+		drawPixel(x0 - x, y0 - y, color);
+		drawPixel(x0 + y, y0 + x, color);
+		drawPixel(x0 - y, y0 + x, color);
+		drawPixel(x0 + y, y0 - x, color);
+		drawPixel(x0 - y, y0 - x, color);
 	}
 }
 
 
-void TFT_22_ILI9225::solidCircle(uint8_t x0, uint8_t y0, uint8_t radius, uint16_t color) {
+void TFT_22_ILI9225::fillCircle(uint8_t x0, uint8_t y0, uint8_t radius, uint16_t color) {
 
 	int16_t f = 1 - radius;
 	int16_t ddF_x = 1;
@@ -296,17 +296,17 @@ void TFT_22_ILI9225::solidCircle(uint8_t x0, uint8_t y0, uint8_t radius, uint16_
 		ddF_x += 2;
 		f += ddF_x;
 
-		line(x0 + x, y0 + y, x0 - x, y0 + y, color); // bottom
-		line(x0 + x, y0 - y, x0 - x, y0 - y, color); // top
-		line(x0 + y, y0 - x, x0 + y, y0 + x, color); // right
-		line(x0 - y, y0 - x, x0 - y, y0 + x, color); // left
+		drawLine(x0 + x, y0 + y, x0 - x, y0 + y, color); // bottom
+		drawLine(x0 + x, y0 - y, x0 - x, y0 - y, color); // top
+		drawLine(x0 + y, y0 - x, x0 + y, y0 + x, color); // right
+		drawLine(x0 - y, y0 - x, x0 - y, y0 + x, color); // left
 	}
 
-	solidRectangle(x0-x, y0-y, x0+x, y0+y, color);
+	fillRectangle(x0-x, y0-y, x0+x, y0+y, color);
 }
 
 
-void TFT_22_ILI9225::line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
+void TFT_22_ILI9225::drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
 
 	// Classic Bresenham algorithm
 	int16_t steep = abs(y2 - y1) > abs(x2 - x1);
@@ -333,8 +333,8 @@ void TFT_22_ILI9225::line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, ui
 
 
 	for (; x1<=x2; x1++) {
-		if (steep) point(y1, x1, color);
-		else       point(x1, y1, color);
+		if (steep) drawPixel(y1, x1, color);
+		else       drawPixel(x1, y1, color);
 
 		err -= dy;
 		if (err < 0) {
@@ -345,7 +345,7 @@ void TFT_22_ILI9225::line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, ui
 }
 
 
-void TFT_22_ILI9225::point(uint16_t x1, uint16_t y1, uint16_t color) {
+void TFT_22_ILI9225::drawPixel(uint16_t x1, uint16_t y1, uint16_t color) {
 
 	if((x1 < 0) || (x1 >= _maxX) || (y1 < 0) || (y1 >= _maxY)) return;
 
@@ -355,7 +355,7 @@ void TFT_22_ILI9225::point(uint16_t x1, uint16_t y1, uint16_t color) {
 }
 
 
-void TFT_22_ILI9225::text(uint16_t x0, uint16_t y0, String s, uint16_t textColor, uint16_t backColor, uint8_t ix, uint8_t iy) {
+void TFT_22_ILI9225::drawText(uint16_t x0, uint16_t y0, String s, uint16_t textColor, uint16_t backColor, uint8_t ix, uint8_t iy) {
 
 	uint8_t c;
 	uint8_t line;
@@ -374,8 +374,8 @@ void TFT_22_ILI9225::text(uint16_t x0, uint16_t y0, String s, uint16_t textColor
 				else        line = font5x8[s.charAt(k)-' '][i];
 
 				for ( j = 0; j<8; j++) {
-					if (bitRead(line, j)) solidRectangle(x+i*ix, y+j*iy, x+i*ix+ix-1, y+j*iy+iy-1, textColor);
-					else solidRectangle(x+i*ix, y+j*iy, x+i*ix+ix-1, y+j*iy+iy-1, backColor);
+					if (bitRead(line, j)) fillRectangle(x+i*ix, y+j*iy, x+i*ix+ix-1, y+j*iy+iy-1, textColor);
+					else fillRectangle(x+i*ix, y+j*iy, x+i*ix+ix-1, y+j*iy+iy-1, backColor);
 				}
 			}
 		}
@@ -389,8 +389,8 @@ void TFT_22_ILI9225::text(uint16_t x0, uint16_t y0, String s, uint16_t textColor
 				else        line = font5x8[s.charAt(k)-' '][i];
 
 				for ( j = 0; j<8; j++) {
-					if (bitRead(line, j)) point(x+i, y+j, textColor);
-					else point(x+i, y+j, backColor);
+					if (bitRead(line, j)) drawPixel(x+i, y+j, textColor);
+					else drawPixel(x+i, y+j, backColor);
 				}
 			}
 		}
@@ -447,7 +447,7 @@ void TFT_22_ILI9225::_writeData(uint8_t HI, uint8_t LO) {
 }
 
 
-void TFT_22_ILI9225::_writeDisplay(uint16_t reg, uint16_t data) {
+void TFT_22_ILI9225::_writeRegister(uint16_t reg, uint16_t data) {
 	_writeCommand(reg >> 8, reg & 255);
 	_writeData(data >> 8, data & 255);
 }

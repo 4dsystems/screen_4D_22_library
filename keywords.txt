@@ -22,14 +22,14 @@ fontX				KEYWORD2
 fontY				KEYWORD2
 maxX				KEYWORD2
 maxY				KEYWORD2
-circle				KEYWORD2
-solidCircle			KEYWORD2
-setBackGroundColor	KEYWORD2
-line				KEYWORD2
-rectangle			KEYWORD2
-solidRectangle		KEYWORD2
-point				KEYWORD2
-text				KEYWORD2
+drawCircle			KEYWORD2
+fillCircle			KEYWORD2
+setBackgroundColor	KEYWORD2
+drawLine			KEYWORD2
+drawRectangle		KEYWORD2
+fillRectangle		KEYWORD2
+drawPixel			KEYWORD2
+drawText			KEYWORD2
 setColor			KEYWORD2
 splitColor			KEYWORD2
 

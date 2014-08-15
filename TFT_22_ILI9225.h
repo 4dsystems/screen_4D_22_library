@@ -172,18 +172,18 @@ class TFT_22_ILI9225 {
 		/// @param	y0 center, point coordinate, y-axis
 		/// @param	radius radius
 		/// @param	color 16-bit color
-		void circle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color);  
+		void drawCircle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color);  
 
 		/// Draw solid circle
 		/// @param	x0 center, point coordinate, x-axis
 		/// @param	y0 center, point coordinate, y-axis
 		/// @param	radius radius
 		/// @param	color 16-bit color
-		void solidCircle(uint8_t x0, uint8_t y0, uint8_t radius, uint16_t color); 
+		void fillCircle(uint8_t x0, uint8_t y0, uint8_t radius, uint16_t color); 
 
 		/// Set background color
 		/// @param	color background color, default=black
-		void setBackGroundColor(uint16_t color = COLOR_BLACK);  
+		void setBackgroundColor(uint16_t color = COLOR_BLACK);  
 
 		/// Draw line, rectangle coordinates
 		/// @param	x1 top left coordinate, x-axis
@@ -191,7 +191,7 @@ class TFT_22_ILI9225 {
 		/// @param	x2 bottom right coordinate, x-axis
 		/// @param	y2 bottom right coordinate, y-axis
 		/// @param	color 16-bit color
-		void line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color); 
+		void drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color); 
 
 		/// Draw rectangle, rectangle coordinates
 		/// @param	x1 top left coordinate, x-axis
@@ -199,7 +199,7 @@ class TFT_22_ILI9225 {
 		/// @param	x2 bottom right coordinate, x-axis
 		/// @param	y2 bottom right coordinate, y-axis
 		/// @param	color 16-bit color
-		void rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color); 
+		void drawRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color); 
 
 		/// Draw solid rectangle, rectangle coordinates
 		/// @param	x1 top left coordinate, x-axis
@@ -207,13 +207,13 @@ class TFT_22_ILI9225 {
 		/// @param	x2 bottom right coordinate, x-axis
 		/// @param	y2 bottom right coordinate, y-axis
 		/// @param	color 16-bit color
-		void solidRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);
+		void fillRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);
 
 		/// Draw pixel
 		/// @param	x1 point coordinate, x-axis
 		/// @param	y1 point coordinate, y-axis
 		/// @param	color 16-bit color
-		void point(uint16_t x1, uint16_t y1, uint16_t color);  
+		void drawPixel(uint16_t x1, uint16_t y1, uint16_t color);  
 
 		/// Draw ASCII Text (pixel coordinates)
 		/// @param	x0 point coordinate, x-axis
@@ -223,7 +223,7 @@ class TFT_22_ILI9225 {
 		/// @param	backColor 16-bit color, default=black
 		/// @param	ix x-axis font size multiplier, default=1
 		/// @param	iy y-axis font size multiplier, default=1
-		void text(uint16_t x0, uint16_t y0, String s, uint16_t textColor = COLOR_WHITE, uint16_t backColor = COLOR_BLACK, uint8_t ix=1, uint8_t iy=1);
+		void drawText(uint16_t x0, uint16_t y0, String s, uint16_t textColor = COLOR_WHITE, uint16_t backColor = COLOR_BLACK, uint8_t ix=1, uint8_t iy=1);
 
 		/// Calculate 16-bit color from 8-bit Red-Green-Blue components
 		/// @param	red red component, 0x00..0xff
@@ -244,7 +244,7 @@ class TFT_22_ILI9225 {
 		void	 _swop(uint16_t &a, uint16_t &b),
 				 _setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1),
 				 _orientCoordinates(uint16_t &x1, uint16_t &y1),
-				 _writeDisplay(uint16_t reg, uint16_t data),
+				 _writeRegister(uint16_t reg, uint16_t data),
 				 _writeData(uint8_t HI, uint8_t LO),
 				 _writeCommand(uint8_t HI, uint8_t LO);
 
