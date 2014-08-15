@@ -9,8 +9,8 @@ This library works with the ILI9225 based 2.2" 176x220 TFT LCD shields commonly 
 that there is a commonly available 2.2" 240x320 TFT module very similar in appearance but using the
 ILI9341 driver.
 
-<img src="https://github.com/JohanCronje/Adafruit_ILI9225/raw/master/images/ILI9225_TFT_front.jpg" alt="Front" width="300">
-<img src="https://github.com/JohanCronje/Adafruit_ILI9225/raw/master/images/ILI9225_TFT_back.jpg" alt="Back" width="300">
+<img src="https://raw.githubusercontent.com/JohanCronje/TFT_22_ILI9225/master/images/ILI9225_TFT_front.jpg" alt="Front" width="300">
+<img src="https://raw.githubusercontent.com/JohanCronje/TFT_22_ILI9225/master/images/ILI9225_TFT_back.jpg" alt="Back" width="300">
 
 To install the library:
 * Click the **Download ZIP** button on the right to download **Adafruit_ILI9225-master.zip**
