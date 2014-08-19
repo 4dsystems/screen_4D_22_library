@@ -1,10 +1,3 @@
-// Core library - MCU-based
-#if defined(ARDUINO) && (ARDUINO >= 100)
-#include "Arduino.h" // for Arduino 1.0
-#else
-#include "WProgram.h" // for Arduino 23
-#endif
-
 // Include application, user and local libraries
 #include "SPI.h"
 #include "TFT_22_ILI9225.h"
@@ -28,11 +21,14 @@ boolean flag = false;
 // Setup
 void setup() {
   tft.begin();
+  Serial.begin(9600);
 }
 
 // Loop
 void loop() {
+    
   tft.drawRectangle(0, 0, tft.maxX() - 1, tft.maxY() - 1, COLOR_WHITE);
+  tft.setFont(Terminal6x8);
   tft.drawText(10, 10, "hello!");
   delay(1000);
   
@@ -41,7 +37,11 @@ void loop() {
   delay(1000);
 
   tft.drawText(10, 30, "text small");
-  tft.drawText(90, 30, "BIG", COLOR_RED, COLOR_YELLOW, 3, 2);
+  tft.setBackgroundColor(COLOR_YELLOW);
+  tft.setFont(Terminal12x16);
+  tft.drawText(90, 30, "BIG", COLOR_RED);
+  tft.setBackgroundColor(COLOR_BLACK);
+  tft.setFont(Terminal6x8);
   delay(1000);
 
   tft.drawText(10, 40, "setBacklight off");
@@ -88,28 +88,13 @@ void loop() {
     delay(1000);
   }
   
-  for (uint8_t i = 0; i < 4; i++) {
-    tft.clear();
-    tft.setOrientation(i);
-    tft.drawRectangle(0, 0, tft.maxX() - 1, tft.maxY() - 1, COLOR_WHITE);
-    tft.drawText(30, 10, "setOrientation (" + String("0123").substring(i, i + 1) + ")", COLOR_WHITE);
-    tft.drawText(30, 20, "getTouch", COLOR_RED);
-    tft.drawText(30, 30, "touch red box to stop", COLOR_WHITE);
-    tft.fillRectangle(3, 3, 20, 20, COLOR_RED);
-    flag = false;
-    
-    do {
-      tft.drawRectangle(x, y, x + 1, y + 1, COLOR_RED);
-      flag = true;
-    } while ( (y > 20) || (x > 20) || (flag==false) );
-    tft.fillRectangle(3, 3, 20, 20, COLOR_YELLOW);
-    tft.drawText(30, 40, "touch stopped", COLOR_YELLOW);
-    delay(1000);
-  }
-  
   tft.setOrientation(0);
   tft.clear();
-  tft.drawText(10, 40, "bye!", COLOR_RED, COLOR_YELLOW, 3, 3);
+  tft.setFont(Terminal12x16);
+  tft.setBackgroundColor(COLOR_YELLOW);
+  tft.drawText(10, 40, "bye!", COLOR_RED);
+  tft.setBackgroundColor(COLOR_BLACK);
+  tft.setFont(Terminal6x8);
   delay(1000);
   
   tft.drawText(10, 60, "off");
@@ -119,4 +104,5 @@ void loop() {
   tft.setDisplay(false);
   
   while(true);
+
 }

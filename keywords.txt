@@ -32,6 +32,14 @@ drawPixel			KEYWORD2
 drawText			KEYWORD2
 setColor			KEYWORD2
 splitColor			KEYWORD2
+drawTriangle		KEYWORD2
+fillTriangle		KEYWORD2
+setFont				KEYWORD2
+drawChar			KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
 
 ######################################
 # Constants (LITERAL1)

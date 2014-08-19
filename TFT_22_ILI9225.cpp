@@ -3,41 +3,42 @@
 
 // Constructor when using software SPI.  All output pins are configurable.
 TFT_22_ILI9225::TFT_22_ILI9225(uint8_t rst, uint8_t rs, uint8_t cs, uint8_t sdi, uint8_t clk, uint8_t led) {
-  _rst  = rst;
-  _rs   = rs;
-  _cs   = cs;
-  _sdi  = sdi;
-  _clk  = clk;
-  _led  = led;
-  hwSPI = false;
+	_rst  = rst;
+	_rs   = rs;
+	_cs   = cs;
+	_sdi  = sdi;
+	_clk  = clk;
+	_led  = led;
+	hwSPI = false;
 }
 
 // Constructor when using hardware SPI.  Faster, but must use SPI pins
 // specific to each board type (e.g. 11,13 for Uno, 51,52 for Mega, etc.)
 TFT_22_ILI9225::TFT_22_ILI9225(uint8_t rst, uint8_t rs, uint8_t cs, uint8_t led) {
-  _rst  = rst;
-  _rs   = rs;
-  _cs   = cs;
-  _sdi  = _clk = 0;
-  _led  = led;
-  hwSPI = true;
+	_rst  = rst;
+	_rs   = rs;
+	_cs   = cs;
+	_sdi  = _clk = 0;
+	_led  = led;
+	hwSPI = true;
 }
 
 
 void TFT_22_ILI9225::_orientCoordinates(uint16_t &x1, uint16_t &y1) {
+
 	switch (_orientation) {
 	case 0:  // ok
 		break;
 	case 1: // ok
-		y1 = _maxY - y1 -1;
+		y1 = _maxY - y1 - 1;
 		_swap(x1, y1);
 		break;
 	case 2: // ok
-		x1 = _maxX - x1 -1;
-		y1 = _maxY - y1 -1;
+		x1 = _maxX - x1 - 1;
+		y1 = _maxY - y1 - 1;
 		break;
 	case 3: // ok
-		x1 = _maxX - x1 -1;
+		x1 = _maxX - x1 - 1;
 		_swap(x1, y1);
 		break;
 	}
@@ -66,27 +67,27 @@ void TFT_22_ILI9225::_setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t 
 
 void TFT_22_ILI9225::begin() {
 
-  // Set up pins
-  pinMode(_rs, OUTPUT);
-  pinMode(_cs, OUTPUT);
-  pinMode(_rst, OUTPUT);
-  if (_led) pinMode(_led, OUTPUT);
+	// Set up pins
+	pinMode(_rs, OUTPUT);
+	pinMode(_cs, OUTPUT);
+	pinMode(_rst, OUTPUT);
+	if (_led) pinMode(_led, OUTPUT);
 
-  if (hwSPI) { // Using hardware SPI
-    SPI.begin();
-    SPI.setClockDivider(SPI_CLOCK_DIV2); // 4 MHz (half speed)
-    //SPI.setClockDivider(SPI_CLOCK_DIV4); // 4 MHz (half speed)
-    SPI.setBitOrder(MSBFIRST);
-    SPI.setDataMode(SPI_MODE0);
-  } else {
-    pinMode(_clk, OUTPUT);
-    pinMode(_sdi, OUTPUT);
-  }
+	if (hwSPI) { // Using hardware SPI
+		SPI.begin();
+		SPI.setClockDivider(SPI_CLOCK_DIV2); // 4 MHz (half speed)
+		//SPI.setClockDivider(SPI_CLOCK_DIV4); // 4 MHz (half speed)
+		SPI.setBitOrder(MSBFIRST);
+		SPI.setDataMode(SPI_MODE0);
+	} else {
+		pinMode(_clk, OUTPUT);
+		pinMode(_sdi, OUTPUT);
+	}
 
-  // Turn on backlight
-  if (_led) digitalWrite(_led, HIGH);
+	// Turn on backlight
+	if (_led) digitalWrite(_led, HIGH);
 
-  // Initialization Code
+	// Initialization Code
 	digitalWrite(_rst, 1); // Pull the reset pin high to release the ILI9225C from the reset status
 	delay(1); 
 	digitalWrite(_rst, 0); // Pull the reset pin low to reset ILI9225
@@ -94,8 +95,8 @@ void TFT_22_ILI9225::begin() {
 	digitalWrite(_rst, 1); // Pull the reset pin high to release the ILI9225C from the reset status
 	delay(50);
 
-  /* Start Initial Sequence */
-  /* Set SS bit and direction output from S528 to S1 */
+	/* Start Initial Sequence */
+	/* Set SS bit and direction output from S528 to S1 */
 	_writeRegister(ILI9225_POWER_CTRL1, 0x0000); // Set SAP,DSTB,STB
 	_writeRegister(ILI9225_POWER_CTRL2, 0x0000); // Set APON,PON,AON,VCI1EN,VC
 	_writeRegister(ILI9225_POWER_CTRL3, 0x0000); // Set BT,DC1,DC2,DC3
@@ -125,7 +126,7 @@ void TFT_22_ILI9225::begin() {
 	_writeRegister(ILI9225_RAM_ADDR_SET1, 0x0000); // RAM Address
 	_writeRegister(ILI9225_RAM_ADDR_SET2, 0x0000); // RAM Address
 
-  /* Set GRAM area */
+	/* Set GRAM area */
 	_writeRegister(ILI9225_GATE_SCAN_CTRL, 0x0000); 
 	_writeRegister(ILI9225_VERTICAL_SCROLL_CTRL1, 0x00DB); 
 	_writeRegister(ILI9225_VERTICAL_SCROLL_CTRL2, 0x0000); 
@@ -137,7 +138,7 @@ void TFT_22_ILI9225::begin() {
 	_writeRegister(ILI9225_VERTICAL_WINDOW_ADDR1, 0x00DB); 
 	_writeRegister(ILI9225_VERTICAL_WINDOW_ADDR2, 0x0000); 
 
-  /* Set GAMMA curve */
+	/* Set GAMMA curve */
 	_writeRegister(ILI9225_GAMMA_CTRL1, 0x0000); 
 	_writeRegister(ILI9225_GAMMA_CTRL2, 0x0808); 
 	_writeRegister(ILI9225_GAMMA_CTRL3, 0x080A); 
@@ -155,6 +156,9 @@ void TFT_22_ILI9225::begin() {
 
 	setBacklight(true);
 	setOrientation(0);
+
+	// Initialize variables
+	setBackgroundColor( COLOR_BLACK );
 
 	clear();
 }
@@ -301,7 +305,6 @@ void TFT_22_ILI9225::fillCircle(uint8_t x0, uint8_t y0, uint8_t radius, uint16_t
 		drawLine(x0 + y, y0 - x, x0 + y, y0 + x, color); // right
 		drawLine(x0 - y, y0 - x, x0 - y, y0 + x, color); // left
 	}
-
 	fillRectangle(x0-x, y0-y, x0+x, y0+y, color);
 }
 
@@ -352,49 +355,6 @@ void TFT_22_ILI9225::drawPixel(uint16_t x1, uint16_t y1, uint16_t color) {
 	_setWindow(x1, y1, x1+1, y1+1);
 	_orientCoordinates(x1, y1);
 	_writeData(color >> 8, color);
-}
-
-
-void TFT_22_ILI9225::drawText(uint16_t x0, uint16_t y0, String s, uint16_t textColor, uint16_t backColor, uint8_t ix, uint8_t iy) {
-
-	uint8_t c;
-	uint8_t line;
-	uint16_t x, y;
-	uint8_t i, j, k;
-
-	y0 -= 8*(iy-1);
-
-	if ((ix>1) || (iy>1)) {
-		for (k=0; k<s.length(); k++) {
-			x = x0 + 6 * k * ix;
-			y = y0;
-
-			for ( i=0; i<6; i++ ) {
-				if (i == 5) line = 0x0;
-				else        line = font5x8[s.charAt(k)-' '][i];
-
-				for ( j = 0; j<8; j++) {
-					if (bitRead(line, j)) fillRectangle(x+i*ix, y+j*iy, x+i*ix+ix-1, y+j*iy+iy-1, textColor);
-					else fillRectangle(x+i*ix, y+j*iy, x+i*ix+ix-1, y+j*iy+iy-1, backColor);
-				}
-			}
-		}
-	} else {
-		for (k=0; k<s.length(); k++) {
-			x = x0 + 6 * k;
-			y = y0;
-
-			for ( i=0; i<6; i++ ) {
-				if (i == 5) line = 0x0;
-				else        line = font5x8[s.charAt(k)-' '][i];
-
-				for ( j = 0; j<8; j++) {
-					if (bitRead(line, j)) drawPixel(x+i, y+j, textColor);
-					else drawPixel(x+i, y+j, backColor);
-				}
-			}
-		}
-	}
 }
 
 
@@ -452,82 +412,145 @@ void TFT_22_ILI9225::_writeRegister(uint16_t reg, uint16_t data) {
 	_writeData(data >> 8, data & 255);
 }
 
+
 void TFT_22_ILI9225::drawTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color) {
 	drawLine(x1, y1, x2, y2, color);
 	drawLine(x2, y2, x3, y3, color);
 	drawLine(x3, y3, x1, y1, color);
 }
 
+
 void TFT_22_ILI9225::fillTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color) {
 
-  uint16_t a, b, y, last;
+	uint16_t a, b, y, last;
 
-  // Sort coordinates by Y order (y3 >= y2 >= y1)
-  if (y1 > y2) {
-    _swap(y1, y2); _swap(x1, x2);
-  }
-  if (y2 > y3) {
-    _swap(y3, y2); _swap(x3, x2);
-  }
-  if (y1 > y2) {
-    _swap(y1, y2); _swap(x1, x2);
-  }
+	// Sort coordinates by Y order (y3 >= y2 >= y1)
+	if (y1 > y2) {
+		_swap(y1, y2); _swap(x1, x2);
+	}
+	if (y2 > y3) {
+		_swap(y3, y2); _swap(x3, x2);
+	}
+	if (y1 > y2) {
+		_swap(y1, y2); _swap(x1, x2);
+	}
 
-  if (y1 == y3) { // Handle awkward all-on-same-line case as its own thing
-    a = b = x1;
-    if (x2 < a)      a = x2;
-    else if (x2 > b) b = x2;
-    if (x3 < a)      a = x3;
-    else if (x3 > b) b = x3;
-  	drawLine(a, y1, b, y1, color);
-    return;
-  }
+	if (y1 == y3) { // Handle awkward all-on-same-line case as its own thing
+		a = b = x1;
+		if (x2 < a)      a = x2;
+		else if (x2 > b) b = x2;
+		if (x3 < a)      a = x3;
+		else if (x3 > b) b = x3;
+			drawLine(a, y1, b, y1, color);
+		return;
+	}
 
-  uint16_t dx11 = x2 - x1,
-           dy11 = y2 - y1,
-           dx12 = x3 - x1,
-           dy12 = y3 - y1,
-           dx22 = x3 - x2,
-           dy22 = y3 - y2,
-           sa   = 0,
-           sb   = 0;
+	uint16_t	dx11 = x2 - x1,
+				dy11 = y2 - y1,
+				dx12 = x3 - x1,
+				dy12 = y3 - y1,
+				dx22 = x3 - x2,
+				dy22 = y3 - y2,
+				sa   = 0,
+				sb   = 0;
 
-  // For upper part of triangle, find scanline crossings for segments
-  // 0-1 and 0-2.  If y2=y3 (flat-bottomed triangle), the scanline y2
-  // is included here (and second loop will be skipped, avoiding a /0
-  // error there), otherwise scanline y2 is skipped here and handled
-  // in the second loop...which also avoids a /0 error here if y1=y2
-  // (flat-topped triangle).
-  if (y2 == y3) last = y2;   // Include y2 scanline
-  else          last = y2 - 1; // Skip it
+	// For upper part of triangle, find scanline crossings for segments
+	// 0-1 and 0-2.  If y2=y3 (flat-bottomed triangle), the scanline y2
+	// is included here (and second loop will be skipped, avoiding a /0
+	// error there), otherwise scanline y2 is skipped here and handled
+	// in the second loop...which also avoids a /0 error here if y1=y2
+	// (flat-topped triangle).
+	if (y2 == y3) last = y2;   // Include y2 scanline
+	else          last = y2 - 1; // Skip it
 
-  for (y = y1; y <= last; y++) {
-    a   = x1 + sa / dy11;
-    b   = x1 + sb / dy12;
-    sa += dx11;
-    sb += dx12;
-    /* longhand:
-    a = x1 + (x2 - x1) * (y - y1) / (y2 - y1);
-    b = x1 + (x3 - x1) * (y - y1) / (y3 - y1);
-    */
-    if (a > b) _swap(a,b);
-  	drawLine(a, y, b, y, color);
-  }
+	for (y = y1; y <= last; y++) {
+	a   = x1 + sa / dy11;
+	b   = x1 + sb / dy12;
+	sa += dx11;
+	sb += dx12;
+	/* longhand:
+	a = x1 + (x2 - x1) * (y - y1) / (y2 - y1);
+	b = x1 + (x3 - x1) * (y - y1) / (y3 - y1);
+	*/
+	if (a > b) _swap(a,b);
+		drawLine(a, y, b, y, color);
+	}
 
-  // For lower part of triangle, find scanline crossings for segments
-  // 0-2 and 1-2.  This loop is skipped if y2=y3.
-  sa = dx22 * (y - y2);
-  sb = dx12 * (y - y1);
-  for (; y<=y3; y++) {
-    a   = x2 + sa / dy22;
-    b   = x1 + sb / dy12;
-    sa += dx22;
-    sb += dx12;
-    /* longhand:
-    a = x2 + (x3 - x2) * (y - y2) / (y3 - y2);
-    b = x1 + (x3 - x1) * (y - y1) / (y3 - y1);
-    */
-    if (a > b) _swap(a,b);
-  	drawLine(a, y, b, y, color);
-  }
+	// For lower part of triangle, find scanline crossings for segments
+	// 0-2 and 1-2.  This loop is skipped if y2=y3.
+	sa = dx22 * (y - y2);
+	sb = dx12 * (y - y1);
+	for (; y<=y3; y++) {
+		a   = x2 + sa / dy22;
+		b   = x1 + sb / dy12;
+		sa += dx22;
+		sb += dx12;
+		/* longhand:
+		a = x2 + (x3 - x2) * (y - y2) / (y3 - y2);
+		b = x1 + (x3 - x1) * (y - y1) / (y3 - y1);
+		*/
+		if (a > b) _swap(a,b);
+			drawLine(a, y, b, y, color);
+	}
 }
+
+
+void TFT_22_ILI9225::setBackgroundColor(uint16_t color) {
+	_bgColor = color;
+}
+
+
+void TFT_22_ILI9225::setFont(uint8_t* font) {
+
+	cfont.font 	   = font;
+	cfont.width    = readFontByte(0);
+	cfont.height   = readFontByte(1);
+	cfont.offset   = readFontByte(2);
+	cfont.numchars = readFontByte(3);
+	cfont.nbrows   = cfont.height / 8;
+
+	if (cfont.height % 8) cfont.nbrows++;  // Set number of bytes used by height of font in multiples of 8
+}
+
+
+void TFT_22_ILI9225::drawText(uint16_t x, uint16_t y, String s, uint16_t color) {
+
+	uint16_t currx = x;
+Serial.println(s);
+	// Print every character in string
+	for (uint8_t k = 0; k < s.length(); k++) {
+//Serial.println(k);		
+		currx += drawChar(currx, y, s.charAt(k), color);
+	}
+}
+
+
+uint16_t TFT_22_ILI9225::drawChar(uint16_t x, uint16_t y, uint16_t ch, uint16_t color) {
+
+	uint8_t charData, charWidth;
+	uint8_t h, i, j, k;
+	uint16_t charOffset;
+
+	charOffset = (cfont.width * cfont.nbrows) + 1;  // bytes used by each character
+	charOffset = (charOffset * (ch - cfont.offset)) + FONT_HEADER_SIZE;  // char offset (add 4 for font header)
+	charWidth  = readFontByte(charOffset);  // get font width from 1st byte
+	charOffset++;  // increment pointer to first character data byte
+
+	for (i = 0; i < charWidth; i++) {  // each font "column"
+		h = 0;  // keep track of char height
+		for (j = 0; j < cfont.nbrows; j++) 	{  // each column byte
+			charData = readFontByte(charOffset);
+			charOffset++;
+			
+			// Process every row in font character
+			for (uint8_t k = 0; k < 8; k++) {
+				if (h >= cfont.height ) break;  // No need to process excess bits
+				if (bitRead(charData, k)) drawPixel(x + i, y + (j * 8) + k, color);
+				else drawPixel(x + i, y + (j * 8) + k, _bgColor);
+				h++;
+			};
+		};
+	};
+	return charWidth;
+}
+
