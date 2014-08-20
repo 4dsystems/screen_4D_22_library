@@ -516,11 +516,10 @@ void TFT_22_ILI9225::setFont(uint8_t* font) {
 void TFT_22_ILI9225::drawText(uint16_t x, uint16_t y, String s, uint16_t color) {
 
 	uint16_t currx = x;
-Serial.println(s);
+
 	// Print every character in string
 	for (uint8_t k = 0; k < s.length(); k++) {
-//Serial.println(k);		
-		currx += drawChar(currx, y, s.charAt(k), color);
+		currx += drawChar(currx, y, s.charAt(k), color) + 1;
 	}
 }
 
@@ -536,17 +535,18 @@ uint16_t TFT_22_ILI9225::drawChar(uint16_t x, uint16_t y, uint16_t ch, uint16_t 
 	charWidth  = readFontByte(charOffset);  // get font width from 1st byte
 	charOffset++;  // increment pointer to first character data byte
 
-	for (i = 0; i < charWidth; i++) {  // each font "column"
+	for (i = 0; i <= charWidth; i++) {  // each font "column" (+1 blank column for spacing)
 		h = 0;  // keep track of char height
 		for (j = 0; j < cfont.nbrows; j++) 	{  // each column byte
-			charData = readFontByte(charOffset);
+			if (i == charWidth) charData = (uint8_t)0x0; // Insert blank column
+			else                charData = readFontByte(charOffset);
 			charOffset++;
 			
 			// Process every row in font character
 			for (uint8_t k = 0; k < 8; k++) {
 				if (h >= cfont.height ) break;  // No need to process excess bits
 				if (bitRead(charData, k)) drawPixel(x + i, y + (j * 8) + k, color);
-				else drawPixel(x + i, y + (j * 8) + k, _bgColor);
+				else                      drawPixel(x + i, y + (j * 8) + k, _bgColor);
 				h++;
 			};
 		};
