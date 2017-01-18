@@ -294,6 +294,8 @@ class TFT_22_ILI9225 {
 
 		_currentFont cfont;
 
+		SPISettings settingsTFT;
+
 };
 
 #endif
