@@ -30,8 +30,6 @@ TFT_22_ILI9225::TFT_22_ILI9225(uint8_t rst, uint8_t rs, uint8_t cs, uint8_t sdi,
 	_led  = led;
 	hwSPI = false;
 	checkSPI = true;
-	// set up the speed, data order and data mode
-	// SPISettings settingsTFT(8000000, MSBFIRST, SPI_MODE0);
 }
 
 // Constructor when using hardware SPI.  Faster, but must use SPI pins
@@ -44,10 +42,6 @@ TFT_22_ILI9225::TFT_22_ILI9225(uint8_t rst, uint8_t rs, uint8_t cs, uint8_t led)
 	_led  = led;
 	hwSPI = true;
 	checkSPI = true;
-	// set up the speed, data order and data mode
-	// ILI9225G Read serial clock cycle time is 200ns: 1s/200ns = 5MHz
-	// Seems to work fine faster though
-	// SPISettings settingsTFT(16000000, MSBFIRST, SPI_MODE0);
 }
 
 void TFT_22_ILI9225::_spiwrite(uint8_t c) {
@@ -161,19 +155,6 @@ void TFT_22_ILI9225::begin() {
         *clkport   &= ~clkpinmask;
         *mosiport  &= ~mosipinmask;
     }
-
-	// Set up pins
-	// pinMode(_rs, OUTPUT);
-	// pinMode(_cs, OUTPUT);
-	// pinMode(_rst, OUTPUT);
-	// if (_led) pinMode(_led, OUTPUT);
-	// digitalWrite(_cs, HIGH);
-	// SPI.begin();
-
-	// if (!hwSPI) { // Using software SPI
-	// 	pinMode(_clk, OUTPUT);
-	// 	pinMode(_sdi, OUTPUT);
-	// }
 
 	// Turn on backlight
 	if (_led > 0) digitalWrite(_led, HIGH);
@@ -528,26 +509,12 @@ void TFT_22_ILI9225::_swap(uint16_t &a, uint16_t &b) {
 void TFT_22_ILI9225::_writeCommand(uint8_t HI, uint8_t LO) {
 	_writecommand(HI);
 	_writecommand(LO);
-	// digitalWrite(_rs, LOW);
-	// SPI.beginTransaction(settingsTFT);
-	// digitalWrite(_cs, LOW);
-	// SPI.transfer(HI);
-	// SPI.transfer(LO);
-	// digitalWrite(_cs, HIGH);
-	// SPI.endTransaction();
 }
 
 
 void TFT_22_ILI9225::_writeData(uint8_t HI, uint8_t LO) {
 	_writedata(HI);
 	_writedata(LO);
-	// digitalWrite(_rs, HIGH);
-	// SPI.beginTransaction(settingsTFT);
-	// digitalWrite(_cs, LOW);
-	// SPI.transfer(HI);
-	// SPI.transfer(LO);
-	// digitalWrite(_cs, HIGH);
-	// SPI.endTransaction();
 }
 
 
