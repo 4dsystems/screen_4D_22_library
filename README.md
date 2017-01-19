@@ -1,6 +1,8 @@
 TFT_22_ILI9225
 ==============
 
+**Version 1.2.0, released 2017-01-18, speeds up Hardware SPI significantly.**
+
 This is a library for the ILI9225 TFT display products, forked from the screen_4D_22_library library. Ability to
 use GLCD fonts has been added and the syntax has been changed to match the Adafruit libraries somewhat.
 
