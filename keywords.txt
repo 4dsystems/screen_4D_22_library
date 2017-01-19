@@ -36,6 +36,8 @@ drawTriangle		KEYWORD2
 fillTriangle		KEYWORD2
 setFont				KEYWORD2
 drawChar			KEYWORD2
+drawBitmap          KEYWORD2
+drawXBitmap         KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)
@@ -126,4 +128,3 @@ COLOR_GOLD           LITERAL1
 COLOR_ORANGE         LITERAL1
 COLOR_SNOW           LITERAL1
 COLOR_YELLOW         LITERAL1
-
