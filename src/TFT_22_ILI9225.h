@@ -8,9 +8,6 @@
 #endif
 #include <avr/pgmspace.h>
 
-// Other libraries
-#include "SPI.h"
-
 /* ILI9225 screen size */
 #define ILI9225_LCD_WIDTH  176
 #define ILI9225_LCD_HEIGHT 220
@@ -154,11 +151,11 @@ class TFT_22_ILI9225 {
 
 		/// Font size, x-axis
 		/// @return	horizontal size of current font, in pixels
-		uint8_t fontX(void);
+		// uint8_t fontX(void);
 
 		/// Font size, y-axis
 		/// @return	vertical size of current font, in pixels
-		uint8_t fontY(void); 
+		// uint8_t fontY(void); 
 
 		/// Screen size, x-axis
 		/// @return	horizontal size of the screen, in pixels
@@ -270,31 +267,45 @@ class TFT_22_ILI9225 {
 		/// @param	color 16-bit color, default=white
 		uint16_t drawChar(uint16_t x, uint16_t y, uint16_t ch, uint16_t color = COLOR_WHITE);
 
+		/// Draw bitmap
+		/// @param	x point coordinate, x-axis
+		/// @param	y point coordinate, y-axis
+		/// @param	bitmap 
+		/// @param	w width
+		/// @param	h height
+		/// @param	color 16-bit color, default=white
+		/// @param	bg 16-bit color, background
 		void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
 		void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg);
 		void drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
 		void drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg);
+
 		void drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
 
 	private:
 
-		void	 _swap(uint16_t &a, uint16_t &b),
-				 _setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1),
-				 _orientCoordinates(uint16_t &x1, uint16_t &y1),
-				 _writeRegister(uint16_t reg, uint16_t data),
-				 _writeData(uint8_t HI, uint8_t LO),
-				 _writeCommand(uint8_t HI, uint8_t LO);
+	    void _spiwrite(uint8_t);
+	    void _writecommand(uint8_t c);
+	    void _writedata(uint8_t d);
+
+		void _swap(uint16_t &a, uint16_t &b);
+		void _setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+		void _orientCoordinates(uint16_t &x1, uint16_t &y1);
+		void _writeRegister(uint16_t reg, uint16_t data);
+		void _writeData(uint8_t HI, uint8_t LO);
+		void _writeCommand(uint8_t HI, uint8_t LO);
 
 		uint16_t _maxX, _maxY, _bgColor;
 
+        volatile uint8_t *mosiport, *clkport, *dcport, *rsport, *csport;
+        // int8_t   _rst, _dc, _cs, _mosi, _sclk, _led,
 		uint8_t  _rst, _rs, _cs, _sdi, _clk, _led,
 				 _orientation;
+        uint8_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
 
-	  	boolean  hwSPI;
+	  	boolean  hwSPI, checkSPI;
 
 		_currentFont cfont;
-
-		SPISettings settingsTFT;
 
 };
 
