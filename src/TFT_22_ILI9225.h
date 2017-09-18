@@ -54,47 +54,48 @@
 #define ILI9225C_INVOFF  0x20
 #define ILI9225C_INVON   0x21
 
+/* RGB 16-bit color table definition (RG565) */
+#define COLOR_BLACK          0x0000      /*   0,   0,   0 */
+#define COLOR_WHITE          0xFFFF      /* 255, 255, 255 */
+#define COLOR_BLUE           0x001F      /*   0,   0, 255 */
+#define COLOR_GREEN          0x07E0      /*   0, 255,   0 */
+#define COLOR_RED            0xF800      /* 255,   0,   0 */
+#define COLOR_NAVY           0x000F      /*   0,   0, 128 */
+#define COLOR_DARKBLUE       0x0011      /*   0,   0, 139 */
+#define COLOR_DARKGREEN      0x03E0      /*   0, 128,   0 */
+#define COLOR_DARKCYAN       0x03EF      /*   0, 128, 128 */
+#define COLOR_CYAN           0x07FF      /*   0, 255, 255 */
+#define COLOR_TURQUOISE      0x471A      /*  64, 224, 208 */
+#define COLOR_INDIGO         0x4810      /*  75,   0, 130 */
+#define COLOR_DARKRED        0x8000      /* 128,   0,   0 */
+#define COLOR_OLIVE          0x7BE0      /* 128, 128,   0 */
+#define COLOR_GRAY           0x8410      /* 128, 128, 128 */
+#define COLOR_GREY           0x8410      /* 128, 128, 128 */
+#define COLOR_SKYBLUE        0x867D      /* 135, 206, 235 */
+#define COLOR_BLUEVIOLET     0x895C      /* 138,  43, 226 */
+#define COLOR_LIGHTGREEN     0x9772      /* 144, 238, 144 */
+#define COLOR_DARKVIOLET     0x901A      /* 148,   0, 211 */
+#define COLOR_YELLOWGREEN    0x9E66      /* 154, 205,  50 */
+#define COLOR_BROWN          0xA145      /* 165,  42,  42 */
+#define COLOR_DARKGRAY       0x7BEF      /* 128, 128, 128 */
+#define COLOR_DARKGREY       0x7BEF      /* 128, 128, 128 */
+#define COLOR_SIENNA         0xA285      /* 160,  82,  45 */
+#define COLOR_LIGHTBLUE      0xAEDC      /* 172, 216, 230 */
+#define COLOR_GREENYELLOW    0xAFE5      /* 173, 255,  47 */
+#define COLOR_SILVER         0xC618      /* 192, 192, 192 */
+#define COLOR_LIGHTGRAY      0xC618      /* 192, 192, 192 */
+#define COLOR_LIGHTGREY      0xC618      /* 192, 192, 192 */
+#define COLOR_LIGHTCYAN      0xE7FF      /* 224, 255, 255 */
+#define COLOR_VIOLET         0xEC1D      /* 238, 130, 238 */
+#define COLOR_AZUR           0xF7FF      /* 240, 255, 255 */
+#define COLOR_BEIGE          0xF7BB      /* 245, 245, 220 */
+#define COLOR_MAGENTA        0xF81F      /* 255,   0, 255 */
+#define COLOR_TOMATO         0xFB08      /* 255,  99,  71 */
+#define COLOR_GOLD           0xFEA0      /* 255, 215,   0 */
+#define COLOR_ORANGE         0xFD20      /* 255, 165,   0 */
+#define COLOR_SNOW           0xFFDF      /* 255, 250, 250 */
+#define COLOR_YELLOW         0xFFE0      /* 255, 255,   0 */
 
-/* RGB 24-bits color table definition (RGB888). */
-#define RGB888_RGB565(color) ((((color) >> 19) & 0x1f) << 11) | ((((color) >> 10) & 0x3f) << 5) | (((color) >> 3) & 0x1f)
-
-#define COLOR_BLACK          RGB888_RGB565(0x000000u)
-#define COLOR_WHITE          RGB888_RGB565(0xFFFFFFu)
-#define COLOR_BLUE           RGB888_RGB565(0x0000FFu)
-#define COLOR_GREEN          RGB888_RGB565(0x00FF00u)
-#define COLOR_RED            RGB888_RGB565(0xFF0000u)
-#define COLOR_NAVY           RGB888_RGB565(0x000080u)
-#define COLOR_DARKBLUE       RGB888_RGB565(0x00008Bu)
-#define COLOR_DARKGREEN      RGB888_RGB565(0x006400u)
-#define COLOR_DARKCYAN       RGB888_RGB565(0x008B8Bu)
-#define COLOR_CYAN           RGB888_RGB565(0x00FFFFu)
-#define COLOR_TURQUOISE      RGB888_RGB565(0x40E0D0u)
-#define COLOR_INDIGO         RGB888_RGB565(0x4B0082u)
-#define COLOR_DARKRED        RGB888_RGB565(0x800000u)
-#define COLOR_OLIVE          RGB888_RGB565(0x808000u)
-#define COLOR_GRAY           RGB888_RGB565(0x808080u)
-#define COLOR_SKYBLUE        RGB888_RGB565(0x87CEEBu)
-#define COLOR_BLUEVIOLET     RGB888_RGB565(0x8A2BE2u)
-#define COLOR_LIGHTGREEN     RGB888_RGB565(0x90EE90u)
-#define COLOR_DARKVIOLET     RGB888_RGB565(0x9400D3u)
-#define COLOR_YELLOWGREEN    RGB888_RGB565(0x9ACD32u)
-#define COLOR_BROWN          RGB888_RGB565(0xA52A2Au)
-#define COLOR_DARKGRAY       RGB888_RGB565(0xA9A9A9u)
-#define COLOR_SIENNA         RGB888_RGB565(0xA0522Du)
-#define COLOR_LIGHTBLUE      RGB888_RGB565(0xADD8E6u)
-#define COLOR_GREENYELLOW    RGB888_RGB565(0xADFF2Fu)
-#define COLOR_SILVER         RGB888_RGB565(0xC0C0C0u)
-#define COLOR_LIGHTGREY      RGB888_RGB565(0xD3D3D3u)
-#define COLOR_LIGHTCYAN      RGB888_RGB565(0xE0FFFFu)
-#define COLOR_VIOLET         RGB888_RGB565(0xEE82EEu)
-#define COLOR_AZUR           RGB888_RGB565(0xF0FFFFu)
-#define COLOR_BEIGE          RGB888_RGB565(0xF5F5DCu)
-#define COLOR_MAGENTA        RGB888_RGB565(0xFF00FFu)
-#define COLOR_TOMATO         RGB888_RGB565(0xFF6347u)
-#define COLOR_GOLD           RGB888_RGB565(0xFFD700u)
-#define COLOR_ORANGE         RGB888_RGB565(0xFFA500u)
-#define COLOR_SNOW           RGB888_RGB565(0xFFFAFAu)
-#define COLOR_YELLOW         RGB888_RGB565(0xFFFF00u)
 
 /* Font defines */
 #define FONT_HEADER_SIZE 4 // 1: pixel width of 1 font character, 2: pixel height, 
