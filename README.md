@@ -2,7 +2,9 @@ TFT_22_ILI9225
 ==============
 
 **Version 1.2.2, released 2017-10-20, adds backlight brightness control.**
+
 **Version 1.2.1, released 2017-09-18, fixed color table shift error.**
+
 **Version 1.2.0, released 2017-01-18, speeds up Hardware SPI significantly.**
 
 This is a library for the ILI9225 TFT display products, forked from the screen_4D_22_library library. Ability to
