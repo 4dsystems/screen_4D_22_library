@@ -1,24 +1,26 @@
-![image](http://www.4dsystems.com.au/imagenes/header.png)
+TFT_22_ILI9225
+==============
 
-Screen_4D_22_Library
-====================
+**Version 1.2.2, released 2017-10-20, adds backlight brightness control.** Credit: [miro1360](https://github.com/miro1360)
 
-4D Systems Arduino Library for Arduino Shields/Modules using the 2.2" SPI Display
+**Version 1.2.1, released 2017-09-18, fixed color table shift error.**
 
-## Screens
+**Version 1.2.0, released 2017-01-18, speeds up Hardware SPI significantly.**
 
-Currently this library is compatible with the following 4D Displays:
+This is a library for the ILI9225 TFT display products, forked from the screen_4D_22_library library. Ability to
+use GLCD fonts has been added and the syntax has been changed to match the Adafruit libraries somewhat.
 
-* 4Display-Shield-22 - 2.2" SPI Display Arduino Shield.
- 
-* 4DLCDM-22 - 2.2" SPI Display Arduino Mini Shield and Breakout Board
+This library works with the ILI9225 based 2.2" 176x220 TFT LCD shields commonly found on eBay. Note
+that there is a commonly available 2.2" 240x320 TFT module very similar in appearance but using the
+ILI9341 driver.
 
-## Installation
+<img src="https://raw.githubusercontent.com/Nkawu/TFT_22_ILI9225/master/images/ILI9225_TFT_front.jpg" alt="Front" width="300">
+<img src="https://raw.githubusercontent.com/Nkawu/TFT_22_ILI9225/master/images/ILI9225_TFT_back.jpg" alt="Back" width="300">
 
-Library should be placed in the C:\Users\(User name)\My Documents\Arduino\Libraries\ folder, or equivalent.
+To install the library:
+* Click the **Download ZIP** button on the right to download **TFT_22_ILI9225-master.zip**
+* Extract the ZIP file to the library folder your *arduinosketchfolder*/libraries/ folder. You may need to create the libraries subfolder if it's your first library.
+* Rename the uncompressed folder from **TFT_22_ILI9225-master** to **TFT_22_ILI9225**
+* Restart the Arduino IDE
 
-For more information on the installation, please refer to [Installing Additional Arduino Libraries](http://arduino.cc/en/Guide/Libraries).
-
-## Example Sketch
-
-Please compile and load the example sketch into your Arduino/Arduino Mini to view the demo program, utilising the Arduino Library.
+Look at the included "Basic_Demo" example sketch for sample code and the Wiki for documentation.
