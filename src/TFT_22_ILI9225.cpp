@@ -28,6 +28,20 @@ TFT_22_ILI9225::TFT_22_ILI9225(uint8_t rst, uint8_t rs, uint8_t cs, uint8_t sdi,
 	_sdi  = sdi;
 	_clk  = clk;
 	_led  = led;
+	_brightness = 255; // Set to maximum brightness
+	hwSPI = false;
+	checkSPI = true;
+}
+
+// Constructor when using software SPI.  All output pins are configurable. Adds backlight brightness 0-255
+TFT_22_ILI9225::TFT_22_ILI9225(uint8_t rst, uint8_t rs, uint8_t cs, uint8_t sdi, uint8_t clk, uint8_t led, uint8_t brightness) {
+	_rst  = rst;
+	_rs   = rs;
+	_cs   = cs;
+	_sdi  = sdi;
+	_clk  = clk;
+	_led  = led;
+	_brightness = brightness;
 	hwSPI = false;
 	checkSPI = true;
 }
@@ -40,6 +54,21 @@ TFT_22_ILI9225::TFT_22_ILI9225(uint8_t rst, uint8_t rs, uint8_t cs, uint8_t led)
 	_cs   = cs;
 	_sdi  = _clk = 0;
 	_led  = led;
+	_brightness = 255; // Set to maximum brightness
+	hwSPI = true;
+	checkSPI = true;
+}
+
+// Constructor when using hardware SPI.  Faster, but must use SPI pins
+// specific to each board type (e.g. 11,13 for Uno, 51,52 for Mega, etc.)
+// Adds backlight brightness 0-255
+TFT_22_ILI9225::TFT_22_ILI9225(uint8_t rst, uint8_t rs, uint8_t cs, uint8_t led, uint8_t brightness) {
+	_rst  = rst;
+	_rs   = rs;
+	_cs   = cs;
+	_sdi  = _clk = 0;
+	_led  = led;
+	_brightness = brightness;
 	hwSPI = true;
 	checkSPI = true;
 }
@@ -127,12 +156,16 @@ void TFT_22_ILI9225::_setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t 
 
 void TFT_22_ILI9225::begin() {
 
-	// Set up pins
+	// Set up reset pin
     if (_rst > 0) {
         pinMode(_rst, OUTPUT);
         digitalWrite(_rst, LOW);
     }
-	if (_led > 0) pinMode(_led, OUTPUT);
+	// Set up backlight pin, turn off initially
+	if (_led > 0) {
+		pinMode(_led, OUTPUT);
+		setBacklight(false);
+	}
 
     pinMode(_rs, OUTPUT);
     pinMode(_cs, OUTPUT);
@@ -155,9 +188,6 @@ void TFT_22_ILI9225::begin() {
         *clkport   &= ~clkpinmask;
         *mosiport  &= ~mosipinmask;
     }
-
-	// Turn on backlight
-	if (_led > 0) digitalWrite(_led, HIGH);
 
 	// Initialization Code
 	if (_rst > 0) {
@@ -239,6 +269,7 @@ void TFT_22_ILI9225::begin() {
 	_writeRegister(ILI9225_DISP_CTRL1, 0x1017);
     if (hwSPI) spi_end();
 
+	// Turn on backlight
 	setBacklight(true);
 	setOrientation(0);
 
@@ -266,7 +297,14 @@ void TFT_22_ILI9225::invert(boolean flag) {
 
 
 void TFT_22_ILI9225::setBacklight(boolean flag) {
-	if (_led) digitalWrite(_led, flag);
+	blState = flag;
+	if (_led) analogWrite(_led, blState ? _brightness : 0);
+}
+
+
+void TFT_22_ILI9225::setBacklightBrightness(uint8_t brightness) {
+	_brightness = brightness;
+	setBacklight(blState);
 }
 
 

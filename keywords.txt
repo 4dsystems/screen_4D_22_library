@@ -15,6 +15,7 @@ begin				KEYWORD2
 clear				KEYWORD2
 invert				KEYWORD2
 setBacklight		KEYWORD2
+setBacklightBrightness		KEYWORD2
 setDisplay			KEYWORD2
 setOrientation		KEYWORD2
 getOrientation		KEYWORD2

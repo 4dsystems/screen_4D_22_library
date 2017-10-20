@@ -9,10 +9,12 @@
 #define TFT_CLK 13  // SCK
 #define TFT_LED 3   // 0 if wired to +5V directly
 
+#define TFT_BRIGHTNESS 200 // Initial brightness of TFT backlight (optional)
+
 // Use hardware SPI (faster - on Uno: 13-SCK, 12-MISO, 11-MOSI)
-TFT_22_ILI9225 tft = TFT_22_ILI9225(TFT_RST, TFT_RS, TFT_CS, TFT_LED);
+TFT_22_ILI9225 tft = TFT_22_ILI9225(TFT_RST, TFT_RS, TFT_CS, TFT_LED, TFT_BRIGHTNESS);
 // Use software SPI (slower)
-//TFT_22_ILI9225 tft = TFT_22_ILI9225(TFT_RST, TFT_RS, TFT_CS, TFT_SDI, TFT_CLK, TFT_LED);
+//TFT_22_ILI9225 tft = TFT_22_ILI9225(TFT_RST, TFT_RS, TFT_CS, TFT_SDI, TFT_CLK, TFT_LED, TFT_BRIGHTNESS);
 
 // Variables and constants
 uint16_t x, y;
