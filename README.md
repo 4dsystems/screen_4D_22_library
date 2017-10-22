@@ -1,7 +1,7 @@
 TFT_22_ILI9225
 ==============
 
-**Version 1.2.2, released 2017-10-20, adds backlight brightness control.** Credit: [miro1360](https://github.com/miro1360)
+**Version 1.2.3, released 2017-10-22, adds backlight brightness control.** Credit: [miro1360](https://github.com/miro1360)
 
 **Version 1.2.1, released 2017-09-18, fixed color table shift error.**
 
