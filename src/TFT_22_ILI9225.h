@@ -123,6 +123,8 @@ class TFT_22_ILI9225 {
 
 		TFT_22_ILI9225(uint8_t RST, uint8_t RS, uint8_t CS, uint8_t SDI, uint8_t CLK, uint8_t LED);
 		TFT_22_ILI9225(uint8_t RST, uint8_t RS, uint8_t CS, uint8_t LED);
+		TFT_22_ILI9225(uint8_t RST, uint8_t RS, uint8_t CS, uint8_t SDI, uint8_t CLK, uint8_t LED, uint8_t brightness);
+		TFT_22_ILI9225(uint8_t RST, uint8_t RS, uint8_t CS, uint8_t LED, uint8_t brightness);
 
 		/// Initialization
 		void begin(void);
@@ -137,6 +139,10 @@ class TFT_22_ILI9225 {
 		/// Switch backlight on or off
 		/// @param	flag true=on, false=off
 		void setBacklight(boolean flag); 
+
+		/// Set backlight brightness
+		/// @param	brightness sets backlight brightness 0-255
+		void setBacklightBrightness(uint8_t brightness); 
 
 		/// Switch display on or off
 		/// @param	flag true=on, false=off
@@ -299,12 +305,11 @@ class TFT_22_ILI9225 {
 		uint16_t _maxX, _maxY, _bgColor;
 
         volatile uint8_t *mosiport, *clkport, *dcport, *rsport, *csport;
-        // int8_t   _rst, _dc, _cs, _mosi, _sclk, _led,
 		uint8_t  _rst, _rs, _cs, _sdi, _clk, _led,
-				 _orientation;
+				 _orientation, _brightness;
         uint8_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
 
-	  	boolean  hwSPI, checkSPI;
+	  	boolean  hwSPI, checkSPI, blState;
 
 		_currentFont cfont;
 
