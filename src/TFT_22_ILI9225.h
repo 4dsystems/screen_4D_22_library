@@ -6,7 +6,14 @@
 #else
     #include "WProgram.h"
 #endif
-#include <avr/pgmspace.h>
+#include <SPI.h>
+
+#if defined(ARDUINO_STM32_FEATHER)
+typedef volatile uint32 RwReg;
+#endif
+#if defined(ARDUINO_FEATHER52)
+typedef volatile uint32_t RwReg;
+#endif
 
 /* ILI9225 screen size */
 #define ILI9225_LCD_WIDTH  176
@@ -15,18 +22,18 @@
 /* ILI9225 LCD Registers */
 #define ILI9225_DRIVER_OUTPUT_CTRL      (0x01u)  // Driver Output Control
 #define ILI9225_LCD_AC_DRIVING_CTRL     (0x02u)  // LCD AC Driving Control
-#define ILI9225_ENTRY_MODE            	(0x03u)  // Entry Mode
-#define ILI9225_DISP_CTRL1          	(0x07u)  // Display Control 1
+#define ILI9225_ENTRY_MODE              (0x03u)  // Entry Mode
+#define ILI9225_DISP_CTRL1              (0x07u)  // Display Control 1
 #define ILI9225_BLANK_PERIOD_CTRL1      (0x08u)  // Blank Period Control
 #define ILI9225_FRAME_CYCLE_CTRL        (0x0Bu)  // Frame Cycle Control
 #define ILI9225_INTERFACE_CTRL          (0x0Cu)  // Interface Control
-#define ILI9225_OSC_CTRL             	(0x0Fu)  // Osc Control
-#define ILI9225_POWER_CTRL1            	(0x10u)  // Power Control 1
-#define ILI9225_POWER_CTRL2           	(0x11u)  // Power Control 2
-#define ILI9225_POWER_CTRL3            	(0x12u)  // Power Control 3
-#define ILI9225_POWER_CTRL4            	(0x13u)  // Power Control 4
-#define ILI9225_POWER_CTRL5            	(0x14u)  // Power Control 5
-#define ILI9225_VCI_RECYCLING          	(0x15u)  // VCI Recycling
+#define ILI9225_OSC_CTRL                (0x0Fu)  // Osc Control
+#define ILI9225_POWER_CTRL1             (0x10u)  // Power Control 1
+#define ILI9225_POWER_CTRL2             (0x11u)  // Power Control 2
+#define ILI9225_POWER_CTRL3             (0x12u)  // Power Control 3
+#define ILI9225_POWER_CTRL4             (0x13u)  // Power Control 4
+#define ILI9225_POWER_CTRL5             (0x14u)  // Power Control 5
+#define ILI9225_VCI_RECYCLING           (0x15u)  // VCI Recycling
 #define ILI9225_RAM_ADDR_SET1           (0x20u)  // Horizontal GRAM Address Set
 #define ILI9225_RAM_ADDR_SET2           (0x21u)  // Vertical GRAM Address Set
 #define ILI9225_GRAM_DATA_REG           (0x22u)  // GRAM Data Register
@@ -37,17 +44,17 @@
 #define ILI9225_PARTIAL_DRIVING_POS1    (0x34u)  // Partial Driving Position 1 Register
 #define ILI9225_PARTIAL_DRIVING_POS2    (0x35u)  // Partial Driving Position 2 Register
 #define ILI9225_HORIZONTAL_WINDOW_ADDR1 (0x36u)  // Horizontal Address Start Position
-#define ILI9225_HORIZONTAL_WINDOW_ADDR2	(0x37u)  // Horizontal Address End Position
+#define ILI9225_HORIZONTAL_WINDOW_ADDR2 (0x37u)  // Horizontal Address End Position
 #define ILI9225_VERTICAL_WINDOW_ADDR1   (0x38u)  // Vertical Address Start Position
 #define ILI9225_VERTICAL_WINDOW_ADDR2   (0x39u)  // Vertical Address End Position
-#define ILI9225_GAMMA_CTRL1            	(0x50u)  // Gamma Control 1
+#define ILI9225_GAMMA_CTRL1             (0x50u)  // Gamma Control 1
 #define ILI9225_GAMMA_CTRL2             (0x51u)  // Gamma Control 2
-#define ILI9225_GAMMA_CTRL3            	(0x52u)  // Gamma Control 3
-#define ILI9225_GAMMA_CTRL4            	(0x53u)  // Gamma Control 4
-#define ILI9225_GAMMA_CTRL5            	(0x54u)  // Gamma Control 5
-#define ILI9225_GAMMA_CTRL6            	(0x55u)  // Gamma Control 6
-#define ILI9225_GAMMA_CTRL7            	(0x56u)  // Gamma Control 7
-#define ILI9225_GAMMA_CTRL8            	(0x57u)  // Gamma Control 8
+#define ILI9225_GAMMA_CTRL3             (0x52u)  // Gamma Control 3
+#define ILI9225_GAMMA_CTRL4             (0x53u)  // Gamma Control 4
+#define ILI9225_GAMMA_CTRL5             (0x54u)  // Gamma Control 5
+#define ILI9225_GAMMA_CTRL6             (0x55u)  // Gamma Control 6
+#define ILI9225_GAMMA_CTRL7             (0x56u)  // Gamma Control 7
+#define ILI9225_GAMMA_CTRL8             (0x57u)  // Gamma Control 8
 #define ILI9225_GAMMA_CTRL9             (0x58u)  // Gamma Control 9
 #define ILI9225_GAMMA_CTRL10            (0x59u)  // Gamma Control 10
 
@@ -108,211 +115,246 @@ extern uint8_t Trebuchet_MS16x21[];
 
 struct _currentFont
 {
-	uint8_t* font;
-	uint8_t width;
-	uint8_t height;
-	uint8_t offset;
-	uint8_t numchars;
-	uint8_t nbrows;
+    uint8_t* font;
+    uint8_t width;
+    uint8_t height;
+    uint8_t offset;
+    uint8_t numchars;
+    uint8_t nbrows;
 };
+
+#if defined (ARDUINO_STM32_FEATHER)
+    #undef USE_FAST_PINIO
+#elif defined (__AVR__) || defined(TEENSYDUINO) || defined(ESP8266) || defined (ESP32) || defined(__arm__)
+    #define USE_FAST_PINIO
+#endif
 
 /// Main and core class
 class TFT_22_ILI9225 {
 
-	public:
+    public:
 
-		TFT_22_ILI9225(uint8_t RST, uint8_t RS, uint8_t CS, uint8_t SDI, uint8_t CLK, uint8_t LED);
-		TFT_22_ILI9225(uint8_t RST, uint8_t RS, uint8_t CS, uint8_t LED);
-		TFT_22_ILI9225(uint8_t RST, uint8_t RS, uint8_t CS, uint8_t SDI, uint8_t CLK, uint8_t LED, uint8_t brightness);
-		TFT_22_ILI9225(uint8_t RST, uint8_t RS, uint8_t CS, uint8_t LED, uint8_t brightness);
+        TFT_22_ILI9225(int8_t RST, int8_t RS, int8_t CS, int8_t SDI, int8_t CLK, int8_t LED);
+        TFT_22_ILI9225(int8_t RST, int8_t RS, int8_t CS, int8_t LED);
+        TFT_22_ILI9225(int8_t RST, int8_t RS, int8_t CS, int8_t SDI, int8_t CLK, int8_t LED, uint8_t brightness);
+        TFT_22_ILI9225(int8_t RST, int8_t RS, int8_t CS, int8_t LED, uint8_t brightness);
 
-		/// Initialization
-		void begin(void);
+        /// Initialization
+#ifdef ESP32
+        void begin(SPIClass &spi)
+#else
+        void begin(void);
+#endif
 
-		/// Clear the screen
-		void clear(void); 
+        /// Clear the screen
+        void clear(void); 
 
-		/// Invert screen
-		/// @param	flag true to invert, false for normal screen
-		void invert(boolean flag);
+        /// Invert screen
+        /// @param    flag true to invert, false for normal screen
+        void invert(boolean flag);
 
-		/// Switch backlight on or off
-		/// @param	flag true=on, false=off
-		void setBacklight(boolean flag); 
+        /// Switch backlight on or off
+        /// @param    flag true=on, false=off
+        void setBacklight(boolean flag); 
 
-		/// Set backlight brightness
-		/// @param	brightness sets backlight brightness 0-255
-		void setBacklightBrightness(uint8_t brightness); 
+        /// Set backlight brightness
+        /// @param    brightness sets backlight brightness 0-255
+        void setBacklightBrightness(uint8_t brightness); 
 
-		/// Switch display on or off
-		/// @param	flag true=on, false=off
-		void setDisplay(boolean flag);  
+        /// Switch display on or off
+        /// @param    flag true=on, false=off
+        void setDisplay(boolean flag);  
 
-		/// Set orientation
-		/// @param	orientation orientation, 0=portrait, 1=right rotated landscape, 2=reverse portrait, 3=left rotated landscape
-		void setOrientation(uint8_t orientation);  
+        /// Set orientation
+        /// @param    orientation orientation, 0=portrait, 1=right rotated landscape, 2=reverse portrait, 3=left rotated landscape
+        void setOrientation(uint8_t orientation);  
 
-		/// Get orientation
-		/// @return	orientation orientation, 0=portrait, 1=right rotated landscape, 2=reverse portrait, 3=left rotated landscape
-		uint8_t getOrientation(void); 
+        /// Get orientation
+        /// @return    orientation orientation, 0=portrait, 1=right rotated landscape, 2=reverse portrait, 3=left rotated landscape
+        uint8_t getOrientation(void); 
 
-		/// Font size, x-axis
-		/// @return	horizontal size of current font, in pixels
-		// uint8_t fontX(void);
+        /// Font size, x-axis
+        /// @return    horizontal size of current font, in pixels
+        // uint8_t fontX(void);
 
-		/// Font size, y-axis
-		/// @return	vertical size of current font, in pixels
-		// uint8_t fontY(void); 
+        /// Font size, y-axis
+        /// @return    vertical size of current font, in pixels
+        // uint8_t fontY(void); 
 
-		/// Screen size, x-axis
-		/// @return	horizontal size of the screen, in pixels
-		/// @note	240 means 240 pixels and thus 0..239 coordinates (decimal)
-		uint16_t maxX(void);
+        /// Screen size, x-axis
+        /// @return    horizontal size of the screen, in pixels
+        /// @note    240 means 240 pixels and thus 0..239 coordinates (decimal)
+        uint16_t maxX(void);
 
-		/// Screen size, y-axis
-		/// @return	vertical size of the screen, in pixels
-		/// @note	220 means 220 pixels and thus 0..219 coordinates (decimal)
-		uint16_t maxY(void);
+        /// Screen size, y-axis
+        /// @return    vertical size of the screen, in pixels
+        /// @note    220 means 220 pixels and thus 0..219 coordinates (decimal)
+        uint16_t maxY(void);
 
-		/// Draw circle
-		/// @param	x0 center, point coordinate, x-axis
-		/// @param	y0 center, point coordinate, y-axis
-		/// @param	radius radius
-		/// @param	color 16-bit color
-		void drawCircle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color);  
+        /// Draw circle
+        /// @param    x0 center, point coordinate, x-axis
+        /// @param    y0 center, point coordinate, y-axis
+        /// @param    radius radius
+        /// @param    color 16-bit color
+        void drawCircle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color);  
 
-		/// Draw solid circle
-		/// @param	x0 center, point coordinate, x-axis
-		/// @param	y0 center, point coordinate, y-axis
-		/// @param	radius radius
-		/// @param	color 16-bit color
-		void fillCircle(uint8_t x0, uint8_t y0, uint8_t radius, uint16_t color); 
+        /// Draw solid circle
+        /// @param    x0 center, point coordinate, x-axis
+        /// @param    y0 center, point coordinate, y-axis
+        /// @param    radius radius
+        /// @param    color 16-bit color
+        void fillCircle(uint8_t x0, uint8_t y0, uint8_t radius, uint16_t color); 
 
-		/// Set background color
-		/// @param	color background color, default=black
-		void setBackgroundColor(uint16_t color = COLOR_BLACK);  
+        /// Set background color
+        /// @param    color background color, default=black
+        void setBackgroundColor(uint16_t color = COLOR_BLACK);  
 
-		/// Draw line, rectangle coordinates
-		/// @param	x1 top left coordinate, x-axis
-		/// @param	y1 top left coordinate, y-axis
-		/// @param	x2 bottom right coordinate, x-axis
-		/// @param	y2 bottom right coordinate, y-axis
-		/// @param	color 16-bit color
-		void drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color); 
+        /// Draw line, rectangle coordinates
+        /// @param    x1 top left coordinate, x-axis
+        /// @param    y1 top left coordinate, y-axis
+        /// @param    x2 bottom right coordinate, x-axis
+        /// @param    y2 bottom right coordinate, y-axis
+        /// @param    color 16-bit color
+        void drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color); 
 
-		/// Draw rectangle, rectangle coordinates
-		/// @param	x1 top left coordinate, x-axis
-		/// @param	y1 top left coordinate, y-axis
-		/// @param	x2 bottom right coordinate, x-axis
-		/// @param	y2 bottom right coordinate, y-axis
-		/// @param	color 16-bit color
-		void drawRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color); 
+        /// Draw rectangle, rectangle coordinates
+        /// @param    x1 top left coordinate, x-axis
+        /// @param    y1 top left coordinate, y-axis
+        /// @param    x2 bottom right coordinate, x-axis
+        /// @param    y2 bottom right coordinate, y-axis
+        /// @param    color 16-bit color
+        void drawRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color); 
 
-		/// Draw solid rectangle, rectangle coordinates
-		/// @param	x1 top left coordinate, x-axis
-		/// @param	y1 top left coordinate, y-axis
-		/// @param	x2 bottom right coordinate, x-axis
-		/// @param	y2 bottom right coordinate, y-axis
-		/// @param	color 16-bit color
-		void fillRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);
+        /// Draw solid rectangle, rectangle coordinates
+        /// @param    x1 top left coordinate, x-axis
+        /// @param    y1 top left coordinate, y-axis
+        /// @param    x2 bottom right coordinate, x-axis
+        /// @param    y2 bottom right coordinate, y-axis
+        /// @param    color 16-bit color
+        void fillRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);
 
-		/// Draw pixel
-		/// @param	x1 point coordinate, x-axis
-		/// @param	y1 point coordinate, y-axis
-		/// @param	color 16-bit color
-		void drawPixel(uint16_t x1, uint16_t y1, uint16_t color);  
+        /// Draw pixel
+        /// @param    x1 point coordinate, x-axis
+        /// @param    y1 point coordinate, y-axis
+        /// @param    color 16-bit color
+        void drawPixel(uint16_t x1, uint16_t y1, uint16_t color);  
 
-		/// Draw ASCII Text (pixel coordinates)
-		/// @param	x point coordinate, x-axis
-		/// @param	y point coordinate, y-axis
-		/// @param	s text string
-		/// @param	color 16-bit color, default=white
-		void drawText(uint16_t x, uint16_t y, String  s, uint16_t color = COLOR_WHITE);
+        /// Draw ASCII Text (pixel coordinates)
+        /// @param    x point coordinate, x-axis
+        /// @param    y point coordinate, y-axis
+        /// @param    s text string
+        /// @param    color 16-bit color, default=white
+        void drawText(uint16_t x, uint16_t y, String  s, uint16_t color = COLOR_WHITE);
 
-		/// Calculate 16-bit color from 8-bit Red-Green-Blue components
-		/// @param	red red component, 0x00..0xff
-		/// @param	green green component, 0x00..0xff
-		/// @param	blue blue component, 0x00..0xff
-		/// @return	16-bit color
-		uint16_t setColor(uint8_t red, uint8_t green, uint8_t blue);
+        /// Calculate 16-bit color from 8-bit Red-Green-Blue components
+        /// @param    red red component, 0x00..0xff
+        /// @param    green green component, 0x00..0xff
+        /// @param    blue blue component, 0x00..0xff
+        /// @return    16-bit color
+        uint16_t setColor(uint8_t red, uint8_t green, uint8_t blue);
 
-		/// Calculate 8-bit Red-Green-Blue components from 16-bit color
-		/// @param	rgb 16-bit color
-		/// @param	red red component, 0x00..0xff
-		/// @param	green green component, 0x00..0xff
-		/// @param	blue blue component, 0x00..0xff
-		void splitColor(uint16_t rgb, uint8_t &red, uint8_t &green, uint8_t &blue);
+        /// Calculate 8-bit Red-Green-Blue components from 16-bit color
+        /// @param    rgb 16-bit color
+        /// @param    red red component, 0x00..0xff
+        /// @param    green green component, 0x00..0xff
+        /// @param    blue blue component, 0x00..0xff
+        void splitColor(uint16_t rgb, uint8_t &red, uint8_t &green, uint8_t &blue);
 
-		/// Draw triangle, triangle coordinates
-		/// @param	x1 corner 1 coordinate, x-axis
-		/// @param	y1 corner 1 coordinate, y-axis
-		/// @param	x2 corner 2 coordinate, x-axis
-		/// @param	y2 corner 2 coordinate, y-axis
-		/// @param	x3 corner 3 coordinate, x-axis
-		/// @param	y3 corner 3 coordinate, y-axis
-		/// @param	color 16-bit color
-		void drawTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color); 
+        /// Draw triangle, triangle coordinates
+        /// @param    x1 corner 1 coordinate, x-axis
+        /// @param    y1 corner 1 coordinate, y-axis
+        /// @param    x2 corner 2 coordinate, x-axis
+        /// @param    y2 corner 2 coordinate, y-axis
+        /// @param    x3 corner 3 coordinate, x-axis
+        /// @param    y3 corner 3 coordinate, y-axis
+        /// @param    color 16-bit color
+        void drawTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color); 
 
-		/// Draw solid triangle, triangle coordinates
-		/// @param	x1 corner 1 coordinate, x-axis
-		/// @param	y1 corner 1 coordinate, y-axis
-		/// @param	x2 corner 2 coordinate, x-axis
-		/// @param	y2 corner 2 coordinate, y-axis
-		/// @param	x3 corner 3 coordinate, x-axis
-		/// @param	y3 corner 3 coordinate, y-axis
-		/// @param	color 16-bit color
-		void fillTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color);
+        /// Draw solid triangle, triangle coordinates
+        /// @param    x1 corner 1 coordinate, x-axis
+        /// @param    y1 corner 1 coordinate, y-axis
+        /// @param    x2 corner 2 coordinate, x-axis
+        /// @param    y2 corner 2 coordinate, y-axis
+        /// @param    x3 corner 3 coordinate, x-axis
+        /// @param    y3 corner 3 coordinate, y-axis
+        /// @param    color 16-bit color
+        void fillTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color);
 
-		/// Set current font
-		/// @param	font Font name
-		void setFont(uint8_t* font);
+        /// Set current font
+        /// @param    font Font name
+        void setFont(uint8_t* font);
 
-		/// Draw single character (pixel coordinates)
-		/// @param	x point coordinate, x-axis
-		/// @param	y point coordinate, y-axis
-		/// @param	ch ASCII character
-		/// @param	color 16-bit color, default=white
-		uint16_t drawChar(uint16_t x, uint16_t y, uint16_t ch, uint16_t color = COLOR_WHITE);
+        /// Draw single character (pixel coordinates)
+        /// @param    x point coordinate, x-axis
+        /// @param    y point coordinate, y-axis
+        /// @param    ch ASCII character
+        /// @param    color 16-bit color, default=white
+        uint16_t drawChar(uint16_t x, uint16_t y, uint16_t ch, uint16_t color = COLOR_WHITE);
 
-		/// Draw bitmap
-		/// @param	x point coordinate, x-axis
-		/// @param	y point coordinate, y-axis
-		/// @param	bitmap 
-		/// @param	w width
-		/// @param	h height
-		/// @param	color 16-bit color, default=white
-		/// @param	bg 16-bit color, background
-		void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
-		void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg);
-		void drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
-		void drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg);
+        /// Draw bitmap
+        /// @param    x point coordinate, x-axis
+        /// @param    y point coordinate, y-axis
+        /// @param    bitmap 
+        /// @param    w width
+        /// @param    h height
+        /// @param    color 16-bit color, default=white
+        /// @param    bg 16-bit color, background
+        void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
+        void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg);
+        void drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
+        void drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg);
 
-		void drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
+        void drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
 
-	private:
+        void startWrite(void);
+        void endWrite(void);
 
-	    void _spiwrite(uint8_t);
-	    void _writecommand(uint8_t c);
-	    void _writedata(uint8_t d);
+    private:
 
-		void _swap(uint16_t &a, uint16_t &b);
-		void _setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
-		void _orientCoordinates(uint16_t &x1, uint16_t &y1);
-		void _writeRegister(uint16_t reg, uint16_t data);
-		void _writeData(uint8_t HI, uint8_t LO);
-		void _writeCommand(uint8_t HI, uint8_t LO);
+        void _spiWrite(uint8_t v);
+        void _spiWriteCommand(uint8_t c);
+        void _spiWriteData(uint8_t d);
 
-		uint16_t _maxX, _maxY, _bgColor;
+        void _swap(uint16_t &a, uint16_t &b);
+        void _setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+        void _orientCoordinates(uint16_t &x1, uint16_t &y1);
+        void _writeRegister(uint16_t reg, uint16_t data);
+        void _writeData(uint8_t HI, uint8_t LO);
+        void _writeCommand(uint8_t HI, uint8_t LO);
 
+        uint16_t _maxX, _maxY, _bgColor;
+
+#if defined (__AVR__) || defined(TEENSYDUINO)
+        int8_t  _rst, _rs, _cs, _sdi, _clk, _led;
+    #ifdef USE_FAST_PINIO
         volatile uint8_t *mosiport, *clkport, *dcport, *rsport, *csport;
-		uint8_t  _rst, _rs, _cs, _sdi, _clk, _led,
-				 _orientation, _brightness;
         uint8_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
+    #endif
+#elif defined (__arm__)
+        int32_t  _rst, _rs, _cs, _sdi, _clk, _led;
+    #ifdef USE_FAST_PINIO
+        volatile RwReg *mosiport, *clkport, *dcport, *rsport, *csport;
+        uint32_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
+    #endif
+#elif defined (ESP8266) || defined (ESP32)
+        int8_t  _rst, _rs, _cs, _sdi, _clk, _led;
+    #ifdef USE_FAST_PINIO
+        volatile uint32_t *mosiport, *clkport, *dcport, *rsport, *csport;
+        uint32_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
+    #endif
+#else
+        int8_t  _rst, _rs, _cs, _sdi, _clk, _led;
+#endif
 
-	  	boolean  hwSPI, checkSPI, blState;
+        uint8_t  _orientation, _brightness;
 
-		_currentFont cfont;
+        bool  hwSPI, checkSPI, blState;
 
+        _currentFont cfont;
+
+#ifdef ESP32
+        SPIClass _spi;
+#endif
 };
 
 #endif
