@@ -144,16 +144,6 @@ TFT_22_ILI9225::TFT_22_ILI9225(int8_t rst, int8_t rs, int8_t cs, int8_t sdi, int
     _brightness = 255; // Set to maximum brightness
     hwSPI = false;
     checkSPI = true;
-#ifdef USE_FAST_PINIO
-    csport    = portOutputRegister(digitalPinToPort(_cs));
-    cspinmask = digitalPinToBitMask(_cs);
-    dcport    = portOutputRegister(digitalPinToPort(_rs));
-    dcpinmask = digitalPinToBitMask(_rs);
-    clkport     = portOutputRegister(digitalPinToPort(_clk));
-    clkpinmask  = digitalPinToBitMask(_clk);
-    mosiport    = portOutputRegister(digitalPinToPort(_sdi));
-    mosipinmask = digitalPinToBitMask(_sdi);
-#endif
 }
 
 // Constructor when using software SPI.  All output pins are configurable. Adds backlight brightness 0-255
@@ -167,16 +157,6 @@ TFT_22_ILI9225::TFT_22_ILI9225(int8_t rst, int8_t rs, int8_t cs, int8_t sdi, int
     _brightness = brightness;
     hwSPI = false;
     checkSPI = true;
-#ifdef USE_FAST_PINIO
-    csport    = portOutputRegister(digitalPinToPort(_cs));
-    cspinmask = digitalPinToBitMask(_cs);
-    dcport    = portOutputRegister(digitalPinToPort(_rs));
-    dcpinmask = digitalPinToBitMask(_rs);
-    clkport     = portOutputRegister(digitalPinToPort(_clk));
-    clkpinmask  = digitalPinToBitMask(_clk);
-    mosiport    = portOutputRegister(digitalPinToPort(_sdi));
-    mosipinmask = digitalPinToBitMask(_sdi);
-#endif
 }
 
 // Constructor when using hardware SPI.  Faster, but must use SPI pins
@@ -190,16 +170,6 @@ TFT_22_ILI9225::TFT_22_ILI9225(int8_t rst, int8_t rs, int8_t cs, int8_t led) {
     _brightness = 255; // Set to maximum brightness
     hwSPI = true;
     checkSPI = true;
-#ifdef USE_FAST_PINIO
-    csport    = portOutputRegister(digitalPinToPort(_cs));
-    cspinmask = digitalPinToBitMask(_cs);
-    dcport    = portOutputRegister(digitalPinToPort(_rs));
-    dcpinmask = digitalPinToBitMask(_rs);
-    clkport     = 0;
-    clkpinmask  = 0;
-    mosiport    = 0;
-    mosipinmask = 0;
-#endif
 }
 
 // Constructor when using hardware SPI.  Faster, but must use SPI pins
@@ -209,31 +179,21 @@ TFT_22_ILI9225::TFT_22_ILI9225(int8_t rst, int8_t rs, int8_t cs, int8_t led, uin
     _rst  = rst;
     _rs   = rs;
     _cs   = cs;
-    _sdi  = _clk = 0;
+    _sdi  = _clk = -1;
     _led  = led;
     _brightness = brightness;
     hwSPI = true;
     checkSPI = true;
-#ifdef USE_FAST_PINIO
-    csport    = portOutputRegister(digitalPinToPort(_cs));
-    cspinmask = digitalPinToBitMask(_cs);
-    dcport    = portOutputRegister(digitalPinToPort(_rs));
-    dcpinmask = digitalPinToBitMask(_rs);
-    clkport     = 0;
-    clkpinmask  = 0;
-    mosiport    = 0;
-    mosipinmask = 0;
-#endif
 }
 
-
+ 
 #ifdef ESP32
-void TFT_22_ILI9225::begin(SPIClass &spi) {}
+void TFT_22_ILI9225::begin(SPIClass &spi)
     _spi = spi;
 #else
-void TFT_22_ILI9225::begin() {
+void TFT_22_ILI9225::begin()
 #endif
-
+{
     // Set up reset pin
     if (_rst > 0) {
         pinMode(_rst, OUTPUT);
@@ -251,12 +211,32 @@ void TFT_22_ILI9225::begin() {
     pinMode(_cs, OUTPUT);
     digitalWrite(_cs, HIGH);
 
+#ifdef USE_FAST_PINIO
+    csport    = portOutputRegister(digitalPinToPort(_cs));
+    cspinmask = digitalPinToBitMask(_cs);
+    dcport    = portOutputRegister(digitalPinToPort(_rs));
+    dcpinmask = digitalPinToBitMask(_rs);
+#endif
+
     // Software SPI
     if(_clk >= 0){
         pinMode(_sdi, OUTPUT);
         digitalWrite(_sdi, LOW);
         pinMode(_clk, OUTPUT);
         digitalWrite(_clk, HIGH);
+#ifdef USE_FAST_PINIO
+        clkport     = portOutputRegister(digitalPinToPort(_clk));
+        clkpinmask  = digitalPinToBitMask(_clk);
+        mosiport    = portOutputRegister(digitalPinToPort(_sdi));
+        mosipinmask = digitalPinToBitMask(_sdi);
+        SSPI_SCK_LOW();
+        SSPI_MOSI_LOW();
+    } else {
+        clkport     = 0;
+        clkpinmask  = 0;
+        mosiport    = 0;
+        mosipinmask = 0;
+#endif
     }
 
     // Hardware SPI
@@ -977,11 +957,11 @@ const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
 
 void TFT_22_ILI9225::startWrite(void){
     SPI_BEGIN_TRANSACTION();
-    // SPI_CS_LOW();
+    SPI_CS_LOW();
 }
 
 
 void TFT_22_ILI9225::endWrite(void){
-    // SPI_CS_HIGH();
+    SPI_CS_HIGH();
     SPI_END_TRANSACTION();
 }
