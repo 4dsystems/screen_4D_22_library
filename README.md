@@ -1,7 +1,7 @@
 TFT_22_ILI9225
 ==============
 
-**Version 1.2.5, released 2017-10-24, reverted architecture support to AVR only.**
+**Version 1.2.6, released 2017-10-27, adds support for all platforms.**
 
 **Version 1.2.3, released 2017-10-22, adds backlight brightness control.** Credit: [miro1360](https://github.com/miro1360)
 
@@ -15,8 +15,6 @@ use GLCD fonts has been added and the syntax has been changed to match the Adafr
 This library works with the ILI9225 based 2.2" 176x220 TFT LCD shields commonly found on eBay. Note
 that there is a commonly available 2.2" 240x320 TFT module very similar in appearance but using the
 ILI9341 driver.
-
-At the moment only AVR based boards are supported due to the code that speeds up TFT display.
 
 <img src="https://raw.githubusercontent.com/Nkawu/TFT_22_ILI9225/master/images/ILI9225_TFT_front.jpg" alt="Front" width="300">
 <img src="https://raw.githubusercontent.com/Nkawu/TFT_22_ILI9225/master/images/ILI9225_TFT_back.jpg" alt="Back" width="300">
