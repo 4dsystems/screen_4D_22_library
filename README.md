@@ -1,7 +1,7 @@
 TFT_22_ILI9225
 ==============
 
-**Version 1.2.4, released 2017-10-23, adds support for all platforms.**
+**Version 1.2.6, released 2017-10-27, adds support for all platforms.**
 
 **Version 1.2.3, released 2017-10-22, adds backlight brightness control.** Credit: [miro1360](https://github.com/miro1360)
 
