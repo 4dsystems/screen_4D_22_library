@@ -25,4 +25,6 @@ To install the library:
 * Rename the uncompressed folder from **TFT_22_ILI9225-master** to **TFT_22_ILI9225**
 * Restart the Arduino IDE
 
+*I have submitted the library to be included in the Arduino Library Manager which will mean it can be installed via the Arduino IDE in future.*
+
 Look at the included "Basic_Demo" example sketch for sample code and the Wiki for documentation.
