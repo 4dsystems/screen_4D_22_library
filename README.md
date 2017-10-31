@@ -1,6 +1,8 @@
 TFT_22_ILI9225
 ==============
 
+**Version 1.2.7, released 2017-10-30, fixes bug for ESP8266.**
+
 **Version 1.2.6, released 2017-10-27, adds support for all platforms.**
 
 **Version 1.2.3, released 2017-10-22, adds backlight brightness control.** Credit: [miro1360](https://github.com/miro1360)
