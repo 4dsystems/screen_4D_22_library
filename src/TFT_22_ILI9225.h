@@ -7,6 +7,7 @@
     #include "WProgram.h"
 #endif
 #include <SPI.h>
+#include "gfxfont.h"
 
 #if defined(ARDUINO_STM32_FEATHER)
 typedef volatile uint32 RwReg;
@@ -150,23 +151,23 @@ class TFT_22_ILI9225 {
         void clear(void); 
 
         /// Invert screen
-        /// @param    flag true to invert, false for normal screen
+        /// @param     flag true to invert, false for normal screen
         void invert(boolean flag);
 
         /// Switch backlight on or off
-        /// @param    flag true=on, false=off
+        /// @param     flag true=on, false=off
         void setBacklight(boolean flag); 
 
         /// Set backlight brightness
-        /// @param    brightness sets backlight brightness 0-255
+        /// @param     brightness sets backlight brightness 0-255
         void setBacklightBrightness(uint8_t brightness); 
 
         /// Switch display on or off
-        /// @param    flag true=on, false=off
+        /// @param     flag true=on, false=off
         void setDisplay(boolean flag);  
 
         /// Set orientation
-        /// @param    orientation orientation, 0=portrait, 1=right rotated landscape, 2=reverse portrait, 3=left rotated landscape
+        /// @param     orientation orientation, 0=portrait, 1=right rotated landscape, 2=reverse portrait, 3=left rotated landscape
         void setOrientation(uint8_t orientation);  
 
         /// Get orientation
@@ -182,13 +183,13 @@ class TFT_22_ILI9225 {
         // uint8_t fontY(void); 
 
         /// Screen size, x-axis
-        /// @return    horizontal size of the screen, in pixels
-        /// @note    240 means 240 pixels and thus 0..239 coordinates (decimal)
+        /// @return   horizontal size of the screen, in pixels
+        /// @note     240 means 240 pixels and thus 0..239 coordinates (decimal)
         uint16_t maxX(void);
 
         /// Screen size, y-axis
-        /// @return    vertical size of the screen, in pixels
-        /// @note    220 means 220 pixels and thus 0..219 coordinates (decimal)
+        /// @return   vertical size of the screen, in pixels
+        /// @note     220 means 220 pixels and thus 0..219 coordinates (decimal)
         uint16_t maxY(void);
 
         /// Draw circle
@@ -244,13 +245,13 @@ class TFT_22_ILI9225 {
         /// @param    y point coordinate, y-axis
         /// @param    s text string
         /// @param    color 16-bit color, default=white
-        void drawText(uint16_t x, uint16_t y, String  s, uint16_t color = COLOR_WHITE);
+        void drawText(uint16_t x, uint16_t y, String s, uint16_t color = COLOR_WHITE);
 
         /// Calculate 16-bit color from 8-bit Red-Green-Blue components
         /// @param    red red component, 0x00..0xff
         /// @param    green green component, 0x00..0xff
         /// @param    blue blue component, 0x00..0xff
-        /// @return    16-bit color
+        /// @return   16-bit color
         uint16_t setColor(uint8_t red, uint8_t green, uint8_t blue);
 
         /// Calculate 8-bit Red-Green-Blue components from 16-bit color
@@ -289,6 +290,7 @@ class TFT_22_ILI9225 {
         /// @param    y point coordinate, y-axis
         /// @param    ch ASCII character
         /// @param    color 16-bit color, default=white
+        /// @return   width of character in display pixels
         uint16_t drawChar(uint16_t x, uint16_t y, uint16_t ch, uint16_t color = COLOR_WHITE);
 
         /// Draw bitmap
@@ -306,8 +308,33 @@ class TFT_22_ILI9225 {
 
         void drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
 
-        void startWrite(void);
-        void endWrite(void);
+        /// Set current GFX font
+        /// @param    f GFX font name defined in include file
+        void setGFXFont(const GFXfont *f = NULL);
+
+        /// Draw a string with the current GFX font
+        /// @param    x point coordinate, x-axis
+        /// @param    y point coordinate, y-axis
+        /// @param    s string to print
+        /// @param    color 16-bit color
+        void drawGFXText(int16_t x, int16_t y, String s, uint16_t color);
+        
+        /// Get the width & height of a text string with the current GFX font
+        /// @param    str string to analyze
+        /// @param    x point coordinate, x-axis
+        /// @param    y point coordinate, y-axis
+        /// @param    w width in pixels of string 
+        /// @param    h height in pixels of string
+        void getGFXTextExtent(String str, int16_t x, int16_t y, int16_t *w, int16_t *h);
+        
+        /// Draw a single character with the current GFX font
+        /// @param    x point coordinate, x-axis
+        /// @param    y point coordinate, y-axis
+        /// @param    c character to draw
+        /// @param    color 16-bit color
+        /// @return   width of character in display pixels
+        uint16_t drawGFXChar(int16_t x, int16_t y, unsigned char c, uint16_t color);
+
 
     private:
 
@@ -355,6 +382,15 @@ class TFT_22_ILI9225 {
 #ifdef ESP32
         SPIClass _spi;
 #endif
+
+    protected:
+
+        void startWrite(void);
+        void endWrite(void);
+
+        void getGFXCharExtent(uint8_t c, int16_t *gw, int16_t *gh, int16_t *xa);
+        
+        GFXfont *gfxFont;
 };
 
 #endif

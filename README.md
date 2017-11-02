@@ -1,14 +1,12 @@
 TFT_22_ILI9225
 ==============
 
+**Version 1.3.0, released 2017-11-00, adds support for glyph fonts **
+
 **Version 1.2.7, released 2017-10-30, fixes bug for ESP8266.**
-
 **Version 1.2.6, released 2017-10-27, adds support for all platforms.**
-
 **Version 1.2.3, released 2017-10-22, adds backlight brightness control.** Credit: [miro1360](https://github.com/miro1360)
-
 **Version 1.2.1, released 2017-09-18, fixed color table shift error.**
-
 **Version 1.2.0, released 2017-01-18, speeds up Hardware SPI significantly.**
 
 This is a library for the ILI9225 TFT display products, forked from the screen_4D_22_library library. Ability to

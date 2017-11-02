@@ -6,6 +6,34 @@
     #endif
 #endif
 #include <limits.h>
+#ifdef __AVR__
+  #include <avr/pgmspace.h>
+#elif defined(ESP8266) || defined(ESP32)
+  #include <pgmspace.h>
+#endif
+
+// Many (but maybe not all) non-AVR board installs define macros
+// for compatibility with existing PROGMEM-reading AVR code.
+// Do our own checks and defines here for good measure...
+
+#ifndef pgm_read_byte
+ #define pgm_read_byte(addr) (*(const unsigned char *)(addr))
+#endif
+#ifndef pgm_read_word
+ #define pgm_read_word(addr) (*(const unsigned short *)(addr))
+#endif
+#ifndef pgm_read_dword
+ #define pgm_read_dword(addr) (*(const unsigned long *)(addr))
+#endif
+
+// Pointers are a peculiar case...typically 16-bit on AVR boards,
+// 32 bits elsewhere.  Try to accommodate both...
+
+#if !defined(__INT_MAX__) || (__INT_MAX__ > 0xFFFF)
+ #define pgm_read_pointer(addr) ((void *)pgm_read_dword(addr))
+#else
+ #define pgm_read_pointer(addr) ((void *)pgm_read_word(addr))
+#endif
 
 // Control pins
 
@@ -144,6 +172,7 @@ TFT_22_ILI9225::TFT_22_ILI9225(int8_t rst, int8_t rs, int8_t cs, int8_t sdi, int
     _brightness = 255; // Set to maximum brightness
     hwSPI = false;
     checkSPI = true;
+    gfxFont = NULL;
 }
 
 // Constructor when using software SPI.  All output pins are configurable. Adds backlight brightness 0-255
@@ -157,6 +186,7 @@ TFT_22_ILI9225::TFT_22_ILI9225(int8_t rst, int8_t rs, int8_t cs, int8_t sdi, int
     _brightness = brightness;
     hwSPI = false;
     checkSPI = true;
+    gfxFont = NULL;
 }
 
 // Constructor when using hardware SPI.  Faster, but must use SPI pins
@@ -170,6 +200,7 @@ TFT_22_ILI9225::TFT_22_ILI9225(int8_t rst, int8_t rs, int8_t cs, int8_t led) {
     _brightness = 255; // Set to maximum brightness
     hwSPI = true;
     checkSPI = true;
+    gfxFont = NULL;
 }
 
 // Constructor when using hardware SPI.  Faster, but must use SPI pins
@@ -184,6 +215,7 @@ TFT_22_ILI9225::TFT_22_ILI9225(int8_t rst, int8_t rs, int8_t cs, int8_t led, uin
     _brightness = brightness;
     hwSPI = true;
     checkSPI = true;
+    gfxFont = NULL;
 }
 
  
@@ -789,7 +821,7 @@ void TFT_22_ILI9225::setBackgroundColor(uint16_t color) {
 
 void TFT_22_ILI9225::setFont(uint8_t* font) {
 
-    cfont.font        = font;
+    cfont.font     = font;
     cfont.width    = readFontByte(0);
     cfont.height   = readFontByte(1);
     cfont.offset   = readFontByte(2);
@@ -860,7 +892,7 @@ const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
     for (j = 0; j < h; j++) {
         for (i = 0; i < w; i++) {
             if (i & 7) byte <<= 1;
-            else      byte   = pgm_read_byte(bitmap + j * byteWidth + i / 8);
+            else       byte   = pgm_read_byte(bitmap + j * byteWidth + i / 8);
             if (byte & 0x80) drawPixel(x + i, y + j, color);
         }
     }
@@ -965,3 +997,91 @@ void TFT_22_ILI9225::endWrite(void){
     SPI_CS_HIGH();
     SPI_END_TRANSACTION();
 }
+
+
+// TEXT- AND CHARACTER-HANDLING FUNCTIONS ----------------------------------
+
+void TFT_22_ILI9225::setGFXFont(const GFXfont *f) {
+    gfxFont = (GFXfont *)f;
+}
+
+
+// Draw a string
+void TFT_22_ILI9225::drawGFXText(int16_t x, int16_t y, String s, uint16_t color) {
+
+    int16_t currx = x;
+
+    if(gfxFont) {
+        // Print every character in string
+        for (uint8_t k = 0; k < s.length(); k++) {
+            currx += drawGFXChar(currx, y, s.charAt(k), color) + 1;
+        }
+    }
+}
+
+
+// Draw a character
+uint16_t TFT_22_ILI9225::drawGFXChar(int16_t x, int16_t y, unsigned char c, uint16_t color) {
+
+    c -= (uint8_t)pgm_read_byte(&gfxFont->first);
+    GFXglyph *glyph  = &(((GFXglyph *)pgm_read_pointer(&gfxFont->glyph))[c]);
+    uint8_t  *bitmap = (uint8_t *)pgm_read_pointer(&gfxFont->bitmap);
+
+    uint16_t bo = pgm_read_word(&glyph->bitmapOffset);
+    uint8_t  w  = pgm_read_byte(&glyph->width),
+             h  = pgm_read_byte(&glyph->height),
+             xa = pgm_read_byte(&glyph->xAdvance);
+    int8_t   xo = pgm_read_byte(&glyph->xOffset),
+             yo = pgm_read_byte(&glyph->yOffset);
+    uint8_t  xx, yy, bits = 0, bit = 0;
+
+    // Add character clipping here one day
+
+    startWrite();
+    checkSPI = false;
+    for(yy=0; yy<h; yy++) {
+        for(xx=0; xx<w; xx++) {
+            if(!(bit++ & 7)) {
+                bits = pgm_read_byte(&bitmap[bo++]);
+            }
+            if(bits & 0x80) {
+                drawPixel(x+xo+xx, y+yo+yy, color);
+            }
+            bits <<= 1;
+        }
+    }
+    checkSPI = true;
+    endWrite();
+
+    return (uint16_t)xa;
+}
+
+
+void TFT_22_ILI9225::getGFXCharExtent(uint8_t c, int16_t *gw, int16_t *gh, int16_t *xa) {
+    uint8_t first = pgm_read_byte(&gfxFont->first),
+            last  = pgm_read_byte(&gfxFont->last);
+    // Char present in this font?
+    if((c >= first) && (c <= last)) {
+        GFXglyph *glyph = &(((GFXglyph *)pgm_read_pointer(&gfxFont->glyph))[c - first]);
+        *gw = pgm_read_byte(&glyph->width);
+        *gh = pgm_read_byte(&glyph->height);
+        *xa = pgm_read_byte(&glyph->xAdvance);
+        // int8_t  xo = pgm_read_byte(&glyph->xOffset),
+        //         yo = pgm_read_byte(&glyph->yOffset);
+    }
+}
+
+
+void TFT_22_ILI9225::getGFXTextExtent(String str, int16_t x, int16_t y, int16_t *w, int16_t *h) {
+    *w  = *h = 0;
+    for (uint8_t k = 0; k < str.length(); k++) {
+        uint8_t c = str.charAt(k);
+        int16_t gw, gh, xa;
+        getGFXCharExtent(c, &gw, &gh, &xa);
+        if(gh > *h) {
+            *h = gh;
+        }
+        *w += xa;
+    }
+}
+
