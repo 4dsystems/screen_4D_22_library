@@ -623,7 +623,8 @@ void TFT_22_ILI9225::fillCircle(uint8_t x0, uint8_t y0, uint8_t radius, uint16_t
 void TFT_22_ILI9225::drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
 
     // Classic Bresenham algorithm
-    int16_t steep = abs(y2 - y1) > abs(x2 - x1);
+    int16_t steep = abs((int16_t)(y2 - y1)) > abs((int16_t)(x2 - x1));
+
     int16_t dx, dy;
 
     if (steep) {
@@ -637,7 +638,7 @@ void TFT_22_ILI9225::drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2
     }
 
     dx = x2 - x1;
-    dy = abs(y2 - y1);
+    dy = abs((int16_t)(y2 - y1));
 
     int16_t err = dx / 2;
     int16_t ystep;
@@ -762,14 +763,14 @@ void TFT_22_ILI9225::fillTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_
         return;
     }
 
-    uint16_t    dx11 = x2 - x1,
-                dy11 = y2 - y1,
-                dx12 = x3 - x1,
-                dy12 = y3 - y1,
-                dx22 = x3 - x2,
-                dy22 = y3 - y2,
-                sa   = 0,
-                sb   = 0;
+    int16_t dx11 = x2 - x1,
+            dy11 = y2 - y1,
+            dx12 = x3 - x1,
+            dy12 = y3 - y1,
+            dx22 = x3 - x2,
+            dy22 = y3 - y2;
+    int32_t sa   = 0,
+            sb   = 0;
 
     // For upper part of triangle, find scanline crossings for segments
     // 0-1 and 0-2.  If y2=y3 (flat-bottomed triangle), the scanline y2
@@ -781,15 +782,15 @@ void TFT_22_ILI9225::fillTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_
     else          last = y2 - 1; // Skip it
 
     for (y = y1; y <= last; y++) {
-    a   = x1 + sa / dy11;
-    b   = x1 + sb / dy12;
-    sa += dx11;
-    sb += dx12;
-    /* longhand:
-    a = x1 + (x2 - x1) * (y - y1) / (y2 - y1);
-    b = x1 + (x3 - x1) * (y - y1) / (y3 - y1);
-    */
-    if (a > b) _swap(a,b);
+        a   = x1 + sa / dy11;
+        b   = x1 + sb / dy12;
+        sa += dx11;
+        sb += dx12;
+        /* longhand:
+        a = x1 + (x2 - x1) * (y - y1) / (y2 - y1);
+        b = x1 + (x3 - x1) * (y - y1) / (y3 - y1);
+        */
+        if (a > b) _swap(a,b);
         drawLine(a, y, b, y, color);
     }
 

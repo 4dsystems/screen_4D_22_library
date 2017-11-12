@@ -1,6 +1,8 @@
 TFT_22_ILI9225
 ==============
 
+**v1.3.1, released 2017-11-12, bug fixes for triangle functions**
+
 **v1.3.0, released 2017-11-01, adds support for GFX type proportional fonts**
 
 **v1.2.7, released 2017-10-30, fixes bug for ESP8266**

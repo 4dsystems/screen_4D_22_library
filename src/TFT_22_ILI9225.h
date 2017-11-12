@@ -211,10 +211,10 @@ class TFT_22_ILI9225 {
         void setBackgroundColor(uint16_t color = COLOR_BLACK);  
 
         /// Draw line, rectangle coordinates
-        /// @param    x1 top left coordinate, x-axis
-        /// @param    y1 top left coordinate, y-axis
-        /// @param    x2 bottom right coordinate, x-axis
-        /// @param    y2 bottom right coordinate, y-axis
+        /// @param    x1 start point coordinate, x-axis
+        /// @param    y1 start point coordinate, y-axis
+        /// @param    x2 end point coordinate, x-axis
+        /// @param    y2 end point coordinate, y-axis
         /// @param    color 16-bit color
         void drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color); 
 
