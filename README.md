@@ -1,6 +1,8 @@
 TFT_22_ILI9225
 ==============
 
+**v1.3.2, released 2017-11-20, add triangle function demo**
+
 **v1.3.1, released 2017-11-12, bug fixes for triangle functions**
 
 **v1.3.0, released 2017-11-01, adds support for GFX type proportional fonts**
