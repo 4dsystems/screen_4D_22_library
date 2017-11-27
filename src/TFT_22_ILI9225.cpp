@@ -63,12 +63,12 @@
     #define SSPI_SCK_LOW()          digitalWrite(_clk, LOW)
 #endif
 
-// #define SSPI_BEGIN_TRANSACTION()
-// #define SSPI_END_TRANSACTION()
-// #define SSPI_WRITE(v)           _spiWrite(v)
-// #define SSPI_WRITE16(s)         SSPI_WRITE((s) >> 8); SSPI_WRITE(s)
-// #define SSPI_WRITE32(l)         SSPI_WRITE((l) >> 24); SSPI_WRITE((l) >> 16); SSPI_WRITE((l) >> 8); SSPI_WRITE(l)
-// #define SSPI_WRITE_PIXELS(c,l)  for(uint32_t i=0; i<(l); i+=2){ SSPI_WRITE(((uint8_t*)(c))[i+1]); SSPI_WRITE(((uint8_t*)(c))[i]); }
+#define SSPI_BEGIN_TRANSACTION()
+#define SSPI_END_TRANSACTION()
+#define SSPI_WRITE(v)           _spiWrite(v)
+#define SSPI_WRITE16(s)         SSPI_WRITE((s) >> 8); SSPI_WRITE(s)
+#define SSPI_WRITE32(l)         SSPI_WRITE((l) >> 24); SSPI_WRITE((l) >> 16); SSPI_WRITE((l) >> 8); SSPI_WRITE(l)
+#define SSPI_WRITE_PIXELS(c,l)  for(uint32_t i=0; i<(l); i+=2){ SSPI_WRITE(((uint8_t*)(c))[i+1]); SSPI_WRITE(((uint8_t*)(c))[i]); }
 
 // Hardware SPI Macros
  
@@ -105,15 +105,15 @@
 #endif
 #if defined(ESP8266) || defined(ESP32)
     // Optimized SPI (ESP8266 and ESP32)
-    // #define HSPI_READ()              SPI_OBJECT.transfer(0)
+    #define HSPI_READ()              SPI_OBJECT.transfer(0)
     #define HSPI_WRITE(b)            SPI_OBJECT.write(b)
-    // #define HSPI_WRITE16(s)          SPI_OBJECT.write16(s)
-    // #define HSPI_WRITE32(l)          SPI_OBJECT.write32(l)
+    #define HSPI_WRITE16(s)          SPI_OBJECT.write16(s)
+    #define HSPI_WRITE32(l)          SPI_OBJECT.write32(l)
     #ifdef SPI_HAS_WRITE_PIXELS
         #define SPI_MAX_PIXELS_AT_ONCE  32
-        // #define HSPI_WRITE_PIXELS(c,l)   SPI_OBJECT.writePixels(c,l)
+        #define HSPI_WRITE_PIXELS(c,l)   SPI_OBJECT.writePixels(c,l)
     #else
-        // #define HSPI_WRITE_PIXELS(c,l)   for(uint32_t i=0; i<((l)/2); i++){ SPI_WRITE16(((uint16_t*)(c))[i]); }
+        #define HSPI_WRITE_PIXELS(c,l)   for(uint32_t i=0; i<((l)/2); i++){ SPI_WRITE16(((uint16_t*)(c))[i]); }
     #endif
 #else
     // Standard Byte-by-Byte SPI
@@ -221,11 +221,13 @@ TFT_22_ILI9225::TFT_22_ILI9225(int8_t rst, int8_t rs, int8_t cs, int8_t led, uin
  
 #ifdef ESP32
 void TFT_22_ILI9225::begin(SPIClass &spi)
-    _spi = spi;
 #else
 void TFT_22_ILI9225::begin()
 #endif
 {
+#ifdef ESP32
+    _spi = spi;
+#endif
     // Set up reset pin
     if (_rst > 0) {
         pinMode(_rst, OUTPUT);
@@ -461,7 +463,9 @@ void TFT_22_ILI9225::invert(boolean flag) {
 
 void TFT_22_ILI9225::setBacklight(boolean flag) {
     blState = flag;
+#ifndef ESP32
     if (_led) analogWrite(_led, blState ? _brightness : 0);
+#endif
 }
 
 

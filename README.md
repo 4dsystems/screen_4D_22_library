@@ -1,6 +1,8 @@
 TFT_22_ILI9225
 ==============
 
+**v1.3.4, released 2017-11-27, add support for ESP32**
+
 **v1.3.3, released 2017-11-26, add support for STM32F1** Credit: [nicolasimeoni](https://github.com/nicolasimeoni)
 
 This is a library for the ILI9225 based 2.2" 176x220 TFT LCD shields commonly found on eBay, originally forked from the screen_4D_22_library library. The ability to use GLCD fonts has been added and the syntax has been changed to match the Adafruit libraries somewhat.

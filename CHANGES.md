@@ -1,6 +1,8 @@
 TFT_22_ILI9225
 ==============
 
+**v1.3.4, released 2017-11-27, add support for ESP32**
+
 **v1.3.3, released 2017-11-26, add support for STM32F1** Credit: [nicolasimeoni](https://github.com/nicolasimeoni)
 
 **v1.3.2, released 2017-11-20, add triangle function demo**
