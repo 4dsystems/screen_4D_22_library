@@ -141,10 +141,10 @@ class TFT_22_ILI9225 {
         TFT_22_ILI9225(int8_t RST, int8_t RS, int8_t CS, int8_t LED, uint8_t brightness);
 
         /// Initialization
-#ifdef ESP32
-        void begin(SPIClass &spi)
-#else
+#ifndef ESP32
         void begin(void);
+#else
+        void begin(SPIClass &spi=SPI);
 #endif
 
         /// Clear the screen

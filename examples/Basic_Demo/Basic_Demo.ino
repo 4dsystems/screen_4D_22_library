@@ -2,7 +2,7 @@
 #include "SPI.h"
 #include "TFT_22_ILI9225.h"
 
-#if defined (ARDUINO_ARCH_STM32F1)
+#ifdef ARDUINO_ARCH_STM32F1
 #define TFT_RST PA1
 #define TFT_RS  PA2
 #define TFT_CS  PA0 // SS
