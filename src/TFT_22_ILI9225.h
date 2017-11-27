@@ -9,7 +9,7 @@
 #include <SPI.h>
 #include "gfxfont.h"
 
-#if defined(ARDUINO_STM32_FEATHER)
+#if defined(ARDUINO_STM32_FEATHER) || defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32F1) || defined(STM32F1)
 typedef volatile uint32 RwReg;
 #endif
 #if defined(ARDUINO_FEATHER52)

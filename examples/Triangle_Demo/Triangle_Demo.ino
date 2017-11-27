@@ -3,12 +3,21 @@
 #include "TFT_22_ILI9225.h"
 #include "Math.h"
 
+#if defined (ARDUINO_ARCH_STM32F1)
+#define TFT_RST PA1
+#define TFT_RS  PA2
+#define TFT_CS  PA0 // SS
+#define TFT_SDI PA7 // MOSI
+#define TFT_CLK PA5 // SCK
+#define TFT_LED 0 // 0 if wired to +5V directly
+#else
 #define TFT_RST 8
 #define TFT_RS  9
 #define TFT_CS  10  // SS
 #define TFT_SDI 11  // MOSI
 #define TFT_CLK 13  // SCK
 #define TFT_LED 3   // 0 if wired to +5V directly
+#endif
 
 #define TFT_BRIGHTNESS 200 // Initial brightness of TFT backlight (optional)
 
