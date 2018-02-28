@@ -31,11 +31,13 @@ drawRectangle		KEYWORD2
 fillRectangle		KEYWORD2
 drawPixel			KEYWORD2
 drawText			KEYWORD2
+getTextWidth		KEYWORD2
 setColor			KEYWORD2
 splitColor			KEYWORD2
 drawTriangle		KEYWORD2
 fillTriangle		KEYWORD2
 setFont				KEYWORD2
+getFont				KEYWORD2
 drawChar			KEYWORD2
 drawBitmap          KEYWORD2
 drawXBitmap         KEYWORD2
@@ -47,6 +49,7 @@ drawXBitmap         KEYWORD2
 ######################################
 # Constants (LITERAL1)
 #######################################
+MONOSPACE						LITERAL1
 
 ILI9225_LCD_WIDTH  LITERAL1
 ILI9225_LCD_HEIGHT LITERAL1
