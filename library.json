@@ -9,7 +9,7 @@
   "authors": {
   	"name": "Nkawu"
   },
-  "version": "1.3.4",
+  "version": "1.3.5",
   "frameworks": "arduino",
   "platforms": "*"
 }

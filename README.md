@@ -1,6 +1,8 @@
 TFT_22_ILI9225
 ==============
 
+**v1.3.5, released 2018-02-27, Stm32 f1 support and speeding up the library** Credit: [MicroBahner](https://github.com/MicroBahner)
+
 **v1.3.4, released 2017-11-27, add support for ESP32**
 
 **v1.3.3, released 2017-11-26, add support for STM32F1** Credit: [nicolasimeoni](https://github.com/nicolasimeoni)
