@@ -1,7 +1,7 @@
 TFT_22_ILI9225
 ==============
 
-**v1.3.7, released 2018-03-18, Fix compilation error with esp8266 v2.4.1 package
+**v1.3.7, released 2018-03-18, Fix compilation error with esp8266 v2.4.1 package**
 
 **v1.3.6, released 2018-03-01, Add high speed color drawBitmap function** Credit: [LAK132](https://github.com/LAK132)
 
