@@ -1,9 +1,9 @@
 TFT_22_ILI9225
 ==============
 
-**v1.3.6, released 2018-03-01, Add high speed color drawBitmap function** Credit: [LAK132](https://github.com/LAK132)
+**v1.3.7, released 2018-03-18, Fix compilation error with esp8266 v2.4.1 package
 
-**v1.3.5, released 2018-02-27, Stm32 f1 support and speeding up the library** Credit: [MicroBahner](https://github.com/MicroBahner)
+**v1.3.6, released 2018-03-01, Add high speed color drawBitmap function** Credit: [LAK132](https://github.com/LAK132)
 
 This is a library for the ILI9225 based 2.2" 176x220 TFT LCD shields commonly found on eBay, originally forked from the screen_4D_22_library library. The ability to use GLCD fonts has been added and the syntax has been changed to match the Adafruit libraries somewhat.
 

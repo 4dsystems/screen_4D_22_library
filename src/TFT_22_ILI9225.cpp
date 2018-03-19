@@ -448,10 +448,10 @@ void TFT_22_ILI9225::_setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t 
 void TFT_22_ILI9225::_setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, autoIncMode_t mode) {
     DB_PRINT( "setWindows( x0=%d, y0=%d, x1=%d, y1=%d, mode=%d", x0,y0,x1,y1,mode );
     // clip to TFT-Dimensions
-    x0 = min( x0,_maxX-1 );
-    x1 = min( x1,_maxX-1 );
-    y0 = min( y0,_maxY-1 );
-    y1 = min( y1,_maxY-1 );
+    x0 = min( x0, (uint16_t) (_maxX-1) );
+    x1 = min( x1, (uint16_t) (_maxX-1) );
+    y0 = min( y0, (uint16_t) (_maxY-1) );
+    y1 = min( y1, (uint16_t) (_maxY-1) );
     _orientCoordinates(x0, y0);
     _orientCoordinates(x1, y1);
 
