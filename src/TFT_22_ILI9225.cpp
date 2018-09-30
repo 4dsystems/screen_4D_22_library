@@ -715,7 +715,7 @@ void TFT_22_ILI9225::drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2
     else ystep = -1;
 
     bool inTrans = checkSPI;
-    if (checkSPI) startWrite();
+    if (inTrans) startWrite();
     if (inTrans) checkSPI = false;
     for (; x1<=x2; x1++) {
         if (steep) drawPixel(y1, x1, color);
@@ -727,7 +727,7 @@ void TFT_22_ILI9225::drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2
             err += dx;
         }
     }
-    if (checkSPI) endWrite();
+    if (inTrans) endWrite();
     if (inTrans) checkSPI = true;
 }
 
