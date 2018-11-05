@@ -25,6 +25,7 @@
 #define TFT_SDI 13  // HSPI-MOSI
 #define TFT_CS  15  // HSPI-SS0
 #define TFT_LED 0   // 0 if wired to +5V directly
+SPIClass hspi(HSPI);
 #else
 #define TFT_RST 8
 #define TFT_RS  9
@@ -275,7 +276,12 @@ static const uint8_t PROGMEM tux[] =
 
 // Setup
 void setup() {
+#if defined(ESP32)
+  hspi.begin();
+  tft.begin(hspi);
+#else
   tft.begin();
+#endif
   Serial.begin(9600);
 }
 
