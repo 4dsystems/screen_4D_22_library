@@ -9,6 +9,22 @@
 #define TFT_SDI PA7 // MOSI
 #define TFT_CLK PA5 // SCK
 #define TFT_LED 0 // 0 if wired to +5V directly
+#elif defined(ESP8266)
+#define TFT_RST 4   // D2
+#define TFT_RS  5   // D1
+#define TFT_CLK 14  // D5 SCK
+//#define TFT_SDO 12  // D6 MISO
+#define TFT_SDI 13  // D7 MOSI
+#define TFT_CS  15  // D8 SS
+#define TFT_LED 2   // D4     set 0 if wired to +5V directly -> D3=0 is not possible !!
+#elif defined(ESP32)
+#define TFT_RST 26  // IO 26
+#define TFT_RS  25  // IO 25
+#define TFT_CLK 14  // HSPI-SCK
+//#define TFT_SDO 12  // HSPI-MISO
+#define TFT_SDI 13  // HSPI-MOSI
+#define TFT_CS  15  // HSPI-SS0
+#define TFT_LED 0   // 0 if wired to +5V directly
 #else
 #define TFT_RST 8
 #define TFT_RS  9
