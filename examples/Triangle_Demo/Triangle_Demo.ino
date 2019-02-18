@@ -1,7 +1,7 @@
 // Include application, user and local libraries
 #include "SPI.h"
 #include "TFT_22_ILI9225.h"
-#include "Math.h"
+#include "math.h"
 
 #if defined (ARDUINO_ARCH_STM32F1)
 #define TFT_RST PA1
