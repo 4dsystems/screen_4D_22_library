@@ -431,7 +431,7 @@ class TFT_22_ILI9225 {
                 };
  
 
-        bool  hwSPI, checkSPI, blState;
+        bool  hwSPI, blState;
 
         _currentFont cfont;
 
@@ -441,6 +441,7 @@ class TFT_22_ILI9225 {
 
     protected:
 
+        uint32_t writeFunctionLevel;
         void startWrite(void);
         void endWrite(void);
 

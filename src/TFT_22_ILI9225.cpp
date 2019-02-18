@@ -192,7 +192,7 @@ TFT_22_ILI9225::TFT_22_ILI9225(int8_t rst, int8_t rs, int8_t cs, int8_t sdi, int
     _led  = led;
     _brightness = 255; // Set to maximum brightness
     hwSPI = false;
-    checkSPI = true;
+    writeFunctionLevel = 0;
     gfxFont = NULL;
 }
 
@@ -206,7 +206,7 @@ TFT_22_ILI9225::TFT_22_ILI9225(int8_t rst, int8_t rs, int8_t cs, int8_t sdi, int
     _led  = led;
     _brightness = brightness;
     hwSPI = false;
-    checkSPI = true;
+    writeFunctionLevel = 0;
     gfxFont = NULL;
 }
 
@@ -220,7 +220,7 @@ TFT_22_ILI9225::TFT_22_ILI9225(int8_t rst, int8_t rs, int8_t cs, int8_t led) {
     _led  = led;
     _brightness = 255; // Set to maximum brightness
     hwSPI = true;
-    checkSPI = true;
+    writeFunctionLevel = 0;
     gfxFont = NULL;
 }
 
@@ -235,7 +235,7 @@ TFT_22_ILI9225::TFT_22_ILI9225(int8_t rst, int8_t rs, int8_t cs, int8_t led, uin
     _led  = led;
     _brightness = brightness;
     hwSPI = true;
-    checkSPI = true;
+    writeFunctionLevel = 0;
     gfxFont = NULL;
 }
 
@@ -595,12 +595,10 @@ uint8_t TFT_22_ILI9225::getOrientation() {
 
 void TFT_22_ILI9225::drawRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
     startWrite();
-    checkSPI = false;
     drawLine(x1, y1, x1, y2, color);
     drawLine(x1, y1, x2, y1, color);
     drawLine(x1, y2, x2, y2, color);
     drawLine(x2, y1, x2, y2, color);
-    checkSPI = true;
     endWrite();
 }
 
@@ -626,7 +624,6 @@ void TFT_22_ILI9225::drawCircle(uint16_t x0, uint16_t y0, uint16_t r, uint16_t c
     int16_t y = r;
 
     startWrite();
-    checkSPI = false;
 
     drawPixel(x0, y0 + r, color);
     drawPixel(x0, y0-  r, color);
@@ -652,7 +649,6 @@ void TFT_22_ILI9225::drawCircle(uint16_t x0, uint16_t y0, uint16_t r, uint16_t c
         drawPixel(x0 + y, y0 - x, color);
         drawPixel(x0 - y, y0 - x, color);
     }
-    checkSPI = true;
     endWrite();
 }
 
@@ -666,7 +662,6 @@ void TFT_22_ILI9225::fillCircle(uint8_t x0, uint8_t y0, uint8_t radius, uint16_t
     int16_t y = radius;
 
     startWrite();
-    checkSPI = false;
     while (x<y) {
         if (f >= 0) {
             y--;
@@ -682,7 +677,6 @@ void TFT_22_ILI9225::fillCircle(uint8_t x0, uint8_t y0, uint8_t radius, uint16_t
         drawLine(x0 + y, y0 - x, x0 + y, y0 + x, color); // right
         drawLine(x0 - y, y0 - x, x0 - y, y0 + x, color); // left
     }
-    checkSPI = true;
     endWrite();
     fillRectangle(x0-x, y0-y, x0+x, y0+y, color);
 }
@@ -714,9 +708,7 @@ void TFT_22_ILI9225::drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2
     if (y1 < y2) ystep = 1;
     else ystep = -1;
 
-    bool inTrans = checkSPI;
-    if (inTrans) startWrite();
-    if (inTrans) checkSPI = false;
+    startWrite();
     for (; x1<=x2; x1++) {
         if (steep) drawPixel(y1, x1, color);
         else       drawPixel(x1, y1, color);
@@ -727,8 +719,7 @@ void TFT_22_ILI9225::drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2
             err += dx;
         }
     }
-    if (inTrans) endWrite();
-    if (inTrans) checkSPI = true;
+    endWrite();
 }
 
 
@@ -738,18 +729,18 @@ void TFT_22_ILI9225::drawPixel(uint16_t x1, uint16_t y1, uint16_t color) {
 /*
     _setWindow(x1, y1, x1+1, y1+1);
     _orientCoordinates(x1, y1);
-    if (checkSPI) startWrite();
+    startWrite();
     //_writeData(color >> 8, color);
     _writeData16(color);
-    if (checkSPI) endWrite();
+    endWrite();
 */
     _orientCoordinates(x1, y1);
-    if (checkSPI) startWrite();
+    startWrite();
     _writeRegister(ILI9225_RAM_ADDR_SET1,x1);
     _writeRegister(ILI9225_RAM_ADDR_SET2,y1);
     _writeRegister(ILI9225_GRAM_DATA_REG,color);
     
-    if (checkSPI) endWrite();
+    endWrite();
 
 
 
@@ -879,11 +870,9 @@ void TFT_22_ILI9225::_writeRegister(uint16_t reg, uint16_t data) {
 
 void TFT_22_ILI9225::drawTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color) {
     startWrite();
-    checkSPI = false;
     drawLine(x1, y1, x2, y2, color);
     drawLine(x2, y2, x3, y3, color);
     drawLine(x3, y3, x1, y1, color);
-    checkSPI = true;
     endWrite();
 }
 
@@ -904,7 +893,6 @@ void TFT_22_ILI9225::fillTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_
     }
 
     startWrite();
-    checkSPI = false;
     if (y1 == y3) { // Handle awkward all-on-same-line case as its own thing
         a = b = x1;
         if (x2 < a)      a = x2;
@@ -962,7 +950,6 @@ void TFT_22_ILI9225::fillTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_
         if (a > b) _swap(a,b);
             drawLine(a, y, b, y, color);
     }
-    checkSPI = true;
     endWrite();
 }
 
@@ -1034,7 +1021,6 @@ uint16_t TFT_22_ILI9225::drawChar(uint16_t x, uint16_t y, uint16_t ch, uint16_t 
     charOffset++;  // increment pointer to first character data byte
 
     startWrite();
-    checkSPI = false;
     
     // use autoincrement/decrement feature, if character fits completely on screen
     fastMode = ( (x+charWidth+1) < _maxX && (y+cfont.height-1) < _maxY ) ;
@@ -1057,7 +1043,6 @@ uint16_t TFT_22_ILI9225::drawChar(uint16_t x, uint16_t y, uint16_t ch, uint16_t 
             }
         }
     }
-    checkSPI = true;
     endWrite();
     _resetWindow();
     return charWidth;
@@ -1128,7 +1113,6 @@ const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg, bool t
     ww  = wx1-wx0 +1;
     _setWindow( wx0,wy0,wx1,wy1,L2R_TopDown);
     startWrite();
-    checkSPI = false;
     for (j = y>=0?0:-y; j < (y>=0?0:-y)+wh; j++) {
         for (i = 0; i < w; i++ ) {
             if (i & 7) { if ( Xbit ) byte >>=1; else byte <<= 1; }
@@ -1154,7 +1138,6 @@ const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg, bool t
             }
         }
     }
-    checkSPI = true;
     endWrite();
 }
 
@@ -1169,7 +1152,6 @@ const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg, bool t
     uint8_t byte;
 
     startWrite();
-    checkSPI = false;
     for (j = 0; j < h; j++) {
         for (i = 0; i < w; i++ ) {
             if (i & 7) byte >>= 1;
@@ -1177,7 +1159,6 @@ const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg, bool t
             if (byte & 0x01) drawPixel(x + i, y + j, color);
         }
     }
-    checkSPI = true;
     endWrite();
 }
 */
@@ -1219,14 +1200,18 @@ uint16_t** bitmap, int16_t w, int16_t h) {
 }
 
 void TFT_22_ILI9225::startWrite(void){
-    SPI_BEGIN_TRANSACTION();
-    SPI_CS_LOW();
+    if (writeFunctionLevel++ == 0) {
+        SPI_BEGIN_TRANSACTION();
+        SPI_CS_LOW();
+    }
 }
 
 
 void TFT_22_ILI9225::endWrite(void){
-    SPI_CS_HIGH();
-    SPI_END_TRANSACTION();
+    if (--writeFunctionLevel == 0) {
+        SPI_CS_HIGH();
+        SPI_END_TRANSACTION();
+    }
 }
 
 
@@ -1275,7 +1260,6 @@ uint16_t TFT_22_ILI9225::drawGFXChar(int16_t x, int16_t y, unsigned char c, uint
     // Add character clipping here one day
 
     startWrite();
-    checkSPI = false;
     for(yy=0; yy<h; yy++) {
         for(xx=0; xx<w; xx++) {
             if(!(bit++ & 7)) {
@@ -1287,7 +1271,6 @@ uint16_t TFT_22_ILI9225::drawGFXChar(int16_t x, int16_t y, unsigned char c, uint
             bits <<= 1;
         }
     }
-    checkSPI = true;
     endWrite();
 
     return (uint16_t)xa;
