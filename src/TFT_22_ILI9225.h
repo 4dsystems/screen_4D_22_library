@@ -349,6 +349,8 @@ class TFT_22_ILI9225 {
         /// @param    h height
         void drawBitmap(uint16_t x, uint16_t y, const uint16_t** bitmap, int16_t w, int16_t h);
         void drawBitmap(uint16_t x, uint16_t y, uint16_t** bitmap, int16_t w, int16_t h);
+        void drawBitmap(uint16_t x, uint16_t y, const uint16_t* bitmap, int16_t w, int16_t h);
+        void drawBitmap(uint16_t x, uint16_t y, uint16_t* bitmap, int16_t w, int16_t h);
 
         /// Set current GFX font
         /// @param    f GFX font name defined in include file
