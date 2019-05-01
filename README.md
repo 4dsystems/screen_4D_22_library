@@ -37,7 +37,7 @@ ILI9341 driver.*
 * Rename the uncompressed folder from **TFT_22_ILI9225-master** to **TFT_22_ILI9225**
 * Restart the Arduino IDE
 
-Look at the included "Basic_Demo" example sketch for sample code and the Wiki for documentation.
+Look at the included "Basic_Demo" example sketch for sample code and the [Wiki](https://github.com/Nkawu/TFT_22_ILI9225/wiki) for documentation.
 
 ## Bugs/Enhancement Requests
 
