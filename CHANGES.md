@@ -2,7 +2,7 @@ TFT_22_ILI9225
 ==============
 
 Version | Release Date | Description
-------- | ------------ | !----------
+------- | ------------ | -----------
 v1.4.2 | 2019-05-01 | More performance improvements for color drawBitmap ([LAK132](https://github.com/LAK132))
 v1.4.1 | 2019-04-18 | Add 1-D bitmap array support and fix drawing issue ([joe820730](https://github.com/joe820730))
 v1.4.0 | 2019-02-17 | Added HSPI support for ESP32, More robust start and end of SPI transaction ([Bolukan](https://github.com/Bolukan))
