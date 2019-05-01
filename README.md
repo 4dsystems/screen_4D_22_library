@@ -1,4 +1,4 @@
-FT_22_ILI9225
+TFT_22_ILI9225
 ==============
 
 **Latest changes:**
@@ -37,6 +37,10 @@ ILI9341 driver.*
 * Restart the Arduino IDE
 
 Look at the included "Basic_Demo" example sketch for sample code and the **[Wiki](https://github.com/Nkawu/TFT_22_ILI9225/wiki)** for documentation.
+
+## Bugs/Enhancement Requests
+
+Documentation in the repo's **[Wiki](https://github.com/Nkawu/TFT_22_ILI9225/wiki)**
 
 ## Bugs/Enhancement Requests
 
