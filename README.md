@@ -4,7 +4,7 @@ TFT_22_ILI9225
 **Latest changes:**
 
 Version | Release Date | Description
-------- | ------------ | -----------
+------- | ------------ | !----------
 v1.4.2 | 2019-05-01 | More performance improvements for color drawBitmap ([LAK132](https://github.com/LAK132))
 
 ## Introduction

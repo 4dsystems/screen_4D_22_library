@@ -386,7 +386,6 @@ class TFT_22_ILI9225 {
         /// @return   width of character in display pixels
         uint16_t drawGFXChar(int16_t x, int16_t y, unsigned char c, uint16_t color);
 
-
     private:
 
         void _spiWrite(uint8_t v);
@@ -429,16 +428,15 @@ class TFT_22_ILI9225 {
 #else
         int8_t  _rst, _rs, _cs, _sdi, _clk, _led;
 #endif
-
         uint8_t  _orientation, _brightness;
         
-        // correspondig modes if orientation changed:
+        // Corresponding modes if orientation changed:
         const autoIncMode_t modeTab [3][8] = {
         //          { R2L_BottomUp, BottomUp_R2L, L2R_BottomUp, BottomUp_L2R, R2L_TopDown,  TopDown_R2L,  L2R_TopDown,  TopDown_L2R }//
         /* 90° */   { BottomUp_L2R, L2R_BottomUp, TopDown_L2R,  L2R_TopDown,  BottomUp_R2L, R2L_BottomUp, TopDown_R2L,  R2L_TopDown },   
         /*180° */   { L2R_TopDown , TopDown_L2R,  R2L_TopDown,  TopDown_R2L,  L2R_BottomUp, BottomUp_L2R, R2L_BottomUp, BottomUp_R2L}, 
         /*270° */   { TopDown_R2L , R2L_TopDown,  BottomUp_R2L, R2L_BottomUp, TopDown_L2R,  L2R_TopDown,  BottomUp_L2R, L2R_BottomUp}
-                };
+        };
  
 
         bool  hwSPI, blState;
