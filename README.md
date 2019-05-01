@@ -38,9 +38,9 @@ ILI9341 driver.*
 
 Look at the included "Basic_Demo" example sketch for sample code and the **[Wiki](https://github.com/Nkawu/TFT_22_ILI9225/wiki)** for documentation.
 
-## Bugs/Enhancement Requests
+## Documentation
 
-Documentation in the repo's **[Wiki](https://github.com/Nkawu/TFT_22_ILI9225/wiki)**
+Documentation describing physical module connections, library methods, fonts etc. can be found in the repo's **[Wiki](https://github.com/Nkawu/TFT_22_ILI9225/wiki)**
 
 ## Bugs/Enhancement Requests
 
