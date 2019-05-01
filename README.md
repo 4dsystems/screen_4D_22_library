@@ -3,7 +3,9 @@ TFT_22_ILI9225
 
 **Latest changes:**
 
-**v1.4.2, released 2019-05-01, More performance improvements for color drawBitmap** Credit: [LAK132](https://github.com/LAK132)
+Version | Release Date | Description
+------- | ------------ | -----------
+v1.4.2 | released 2019-05-01 | More performance improvements for color drawBitmap ([LAK132](https://github.com/LAK132))
 
 ## Introduction
 
@@ -47,9 +49,13 @@ Note that this an open source project, it may take some time for your requests t
 
 Many thanks to all the contributors that have vastly improved this library from it's humble beginnings. Individual contributions are listed in the CHANGES file:
 
+* [techi602](https://github.com/techi602)
+* [ellsclytn](https://github.com/ellsclytn)
 * [miro1360](https://github.com/miro1360)
 * [nicolasimeoni](https://github.com/nicolasimeoni)
 * [MicroBahner](https://github.com/MicroBahner)
 * [LAK132](https://github.com/LAK132)
+* [per1234](https://github.com/per1234)
+* [G4lile0](https://github.com/G4lile0)
 * [Bolukan](https://github.com/Bolukan)
 * [joe820730](https://github.com/joe820730)
