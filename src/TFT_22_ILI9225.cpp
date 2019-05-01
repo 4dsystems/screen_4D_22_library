@@ -405,6 +405,18 @@ void TFT_22_ILI9225::_spiWrite(uint8_t b) {
     }
 }
 
+void TFT_22_ILI9225::_spiWrite16(uint16_t s)
+{
+    // Attempt to use HSPI_WRITE16 if available
+    #ifdef HSPI_WRITE16
+    if(_clk < 0){
+        HSPI_WRITE16(s);
+        return;
+    }
+    #endif
+    // Fallback to SSPI_WRITE16 if HSPI_WRITE16 not available
+    SSPI_WRITE16(s);
+}
 
 void TFT_22_ILI9225::_spiWriteCommand(uint8_t c) {
     SPI_DC_LOW();
@@ -1170,11 +1182,15 @@ const uint16_t** bitmap, int16_t w, int16_t h) {
     startWrite();
     SPI_DC_HIGH();
     SPI_CS_LOW();
-    for (uint16_t x = 0; x < w; x++) {
-        for (uint16_t y = 0; y < h; y++) {
-            uint16_t col = bitmap[x][y];
-            _spiWrite(col>>8);
-            _spiWrite(col);
+    for (uint16_t y = 0; y < h; y++) {
+        #ifdef HSPI_WRITE_PIXELS
+        if (_clk < 0) {
+            HSPI_WRITE_PIXELS(bitmap[y], w * sizeof(uint16_t));
+            continue;
+        }
+        #endif
+        for (uint16_t x = 0; x < w; x++) {
+            _spiWrite16(bitmap[y][x]);
         }
     }
     SPI_CS_HIGH();
@@ -1188,11 +1204,15 @@ uint16_t** bitmap, int16_t w, int16_t h) {
     startWrite();
     SPI_DC_HIGH();
     SPI_CS_LOW();
-    for (uint16_t x = 0; x < w; x++) {
-        for (uint16_t y = 0; y < h; y++) {
-            uint16_t col = bitmap[x][y];
-            _spiWrite(col>>8);
-            _spiWrite(col);
+    for (uint16_t y = 0; y < h; y++) {
+        #ifdef HSPI_WRITE_PIXELS
+        if (_clk < 0) {
+            HSPI_WRITE_PIXELS(bitmap[y], w * sizeof(uint16_t));
+            continue;
+        }
+        #endif
+        for (uint16_t x = 0; x < w; x++) {
+            _spiWrite16(bitmap[y][x]);
         }
     }
     SPI_CS_HIGH();
@@ -1206,12 +1226,13 @@ const uint16_t* bitmap, int16_t w, int16_t h) {
     startWrite();
     SPI_DC_HIGH();
     SPI_CS_LOW();
-    for (uint16_t j = 0; j < h; j++) {
-        for (uint16_t i = 0; i < w; i++) {
-            uint16_t col = bitmap[j*h+i];
-            _spiWrite(col>>8);
-            _spiWrite(col);
-        }
+    #ifdef HSPI_WRITE_PIXELS
+    if (_clk < 0) {
+        HSPI_WRITE_PIXELS(bitmap, w * h * sizeof(uint16_t));
+    } else
+    #endif
+    for (uint16_t i = 0; i < h * w; ++i) {
+        _spiWrite16(bitmap[i]);
     }
     SPI_CS_HIGH();
     endWrite();
@@ -1224,12 +1245,13 @@ uint16_t* bitmap, int16_t w, int16_t h) {
     startWrite();
     SPI_DC_HIGH();
     SPI_CS_LOW();
-    for (uint16_t j = 0; j < h; j++) {
-        for (uint16_t i = 0; i < w; i++) {
-            uint16_t col = bitmap[j*h+i];
-            _spiWrite(col>>8);
-            _spiWrite(col);
-        }
+    #ifdef HSPI_WRITE_PIXELS
+    if (_clk < 0) {
+        HSPI_WRITE_PIXELS(bitmap, w * h * sizeof(uint16_t));
+    } else
+    #endif
+    for (uint16_t i = 0; i < h * w; ++i) {
+        _spiWrite16(bitmap[i]);
     }
     SPI_CS_HIGH();
     endWrite();
