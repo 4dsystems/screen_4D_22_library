@@ -1,4 +1,4 @@
-TFT_22_ILI9225
+FT_22_ILI9225
 ==============
 
 **Latest changes:**
@@ -14,8 +14,7 @@ This is a library for the ILI9225 based 2.2" 176x220 TFT LCD shields commonly fo
 *Note that there is a commonly available 2.2" 240x320 TFT module very similar in appearance but using the
 ILI9341 driver.*
 
-<img src="https://raw.githubusercontent.com/Nkawu/TFT_22_ILI9225/master/images/ILI9225_TFT_front.jpg" alt="Front" width="300">
-<img src="https://raw.githubusercontent.com/Nkawu/TFT_22_ILI9225/master/images/ILI9225_TFT_back.jpg" alt="Back" width="300">
+<img src="https://raw.githubusercontent.com/Nkawu/TFT_22_ILI9225/master/images/ILI9225_TFT.jpg" alt="ILI9225" width="300">
 
 ## Installation
 
