@@ -1,6 +1,8 @@
 TFT_22_ILI9225
 ==============
 
+**v1.4.2, released 2019-05-01, More performance improvements for color drawBitmap** Credit: [LAK132](https://github.com/LAK132)
+
 **v1.4.1, released 2019-04-18, Add 1-D bitmap array support and fix drawing issue** Credit: [joe820730](https://github.com/joe820730)
 
 **v1.4.0, released 2019-02-17, Even more ESP32/8266 fixes** Credit: [Bolukan](https://github.com/Bolukan)
