@@ -1,4 +1,10 @@
-![image](http://www.4dsystems.com.au/imagenes/header.png)
+LICENSE
+=======
+
+This software is released, with written permission from 4D Systems, under any
+Public Domain license that users of this repository see fit. If a specific
+license is required by the user, please see the Zero-Clause BSD license in the
+provided LICENSE file within this repository.
 
 Screen_4D_22_Library
 ====================
