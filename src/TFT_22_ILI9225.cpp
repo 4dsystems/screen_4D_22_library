@@ -125,7 +125,7 @@
         #define SPI_MAX_PIXELS_AT_ONCE  32
         #define HSPI_WRITE_PIXELS(c,l)   SPI_OBJECT.writePixels(c,l)
     #else
-        #define HSPI_WRITE_PIXELS(c,l)   for(uint32_t i=0; i<((l)/2); i++){ SPI_WRITE16(((uint16_t*)(c))[i]); }
+        #define HSPI_WRITE_PIXELS(c,l)   for(uint32_t i=0; i<((l)/2); i++){ HSPI_WRITE16(((uint16_t*)(c))[i]); }
     #endif
 #elif defined ( __STM32F1__ )
     #define HSPI_WRITE(b)            SPI_OBJECT.write(b)
