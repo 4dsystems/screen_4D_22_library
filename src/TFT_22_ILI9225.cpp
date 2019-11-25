@@ -1102,8 +1102,10 @@ void TFT_22_ILI9225::drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, in
 void TFT_22_ILI9225::_drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg, bool transparent, bool progmem,bool Xbit) {
     bool noAutoInc = false;     // Flag set when transparent pixel was 'written'
     int16_t i, j, byteWidth = (w + 7) / 8;
-    int16_t wx0, wy0, wx1, wy1, wh, ww;  // Window-position and size
+    int16_t wx0, wy0, wx1, wy1, wh;  // Window-position and size
+	// int16_t ww;
     uint8_t byte, maskBit;
+	byte = 0;
     maskBit = Xbit? 0x01:0x80;
     // adjust window hight/width to displaydimensions
     DB_PRINT( "DrawBitmap.. maxX=%d, maxY=%d", _maxX,_maxY );
@@ -1112,7 +1114,7 @@ void TFT_22_ILI9225::_drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, in
     wx1 = (x + w > _maxX ?_maxX : x + w ) - 1;
     wy1 = (y + h > _maxY ?_maxY : y + h ) - 1;
     wh  = wy1 - wy0 + 1;
-    ww  = wx1 - wx0 + 1;
+    // ww  = wx1 - wx0 + 1;
     _setWindow(wx0, wy0, wx1, wy1, L2R_TopDown);
     startWrite();
     for (j = y>=0?0:-y; j < (y>=0?0:-y)+wh; j++) {
