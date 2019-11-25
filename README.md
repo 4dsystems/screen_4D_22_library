@@ -5,7 +5,7 @@ TFT_22_ILI9225
 
 Version | Release Date | Description
 ------- | ------------ | -----------
-v1.4.2 | 2019-05-01 | More performance improvements for color drawBitmap ([LAK132](https://github.com/LAK132))
+[v1.4.3](https://github.com/Nkawu/TFT_22_ILI9225/releases/tag/v1.4.3) | 2019-11-25 | Cleanup and ESP32 FAST_PINIO fixes ([Bolukan](https://github.com/Bolukan) [dl9rdz](https://github.com/dl9rdz))
 
 ## Introduction
 
