@@ -144,9 +144,9 @@ struct _currentFont
 };
 #define MONOSPACE   1
 
-#if defined (ARDUINO_STM32_FEATHER)
+#if defined (ARDUINO_STM32_FEATHER) || defined(ESP32)
     #undef USE_FAST_PINIO
-#elif defined (__AVR__) || defined(TEENSYDUINO) || defined(ESP8266) || defined (ESP32) || defined(__arm__)
+#elif defined (__AVR__) || defined(TEENSYDUINO) || defined(ESP8266) || defined(__arm__)
     #define USE_FAST_PINIO
 #endif
 
