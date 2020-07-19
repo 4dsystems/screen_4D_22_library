@@ -3,6 +3,7 @@ TFT_22_ILI9225
 
 Version | Release Date | Description
 ------- | ------------ | -----------
+[v1.4.4](https://github.com/Nkawu/TFT_22_ILI9225/releases/tag/v1.4.4) | 2020-07-19 | Add support for Arduino Nano Every ([charclo](https://github.com/charclo))
 [v1.4.3](https://github.com/Nkawu/TFT_22_ILI9225/releases/tag/v1.4.3) | 2019-11-25 | Cleanup and ESP32 FAST_PINIO fixes ([Bolukan](https://github.com/Bolukan) [dl9rdz](https://github.com/dl9rdz))
 [v1.4.2](https://github.com/Nkawu/TFT_22_ILI9225/releases/tag/v1.4.2) | 2019-05-01 | More performance improvements for color drawBitmap ([LAK132](https://github.com/LAK132))
 [v1.4.1](https://github.com/Nkawu/TFT_22_ILI9225/releases/tag/v1.4.1) | 2019-04-18 | Add 1-D bitmap array support and fix drawing issue ([joe820730](https://github.com/joe820730))
