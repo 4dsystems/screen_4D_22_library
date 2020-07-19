@@ -134,7 +134,18 @@
 #else
     // Standard Byte-by-Byte SPI
 
-    #if defined (__AVR__) || defined(TEENSYDUINO)
+    #if defined(__AVR_ATmega4809__)
+    static inline uint8_t _avr_spi_read(void) __attribute__((always_inline));
+    static inline uint8_t _avr_spi_read(void) {
+        uint8_t r = 0;
+        SPI0_DATA = r;
+        while(!(SPI0_INTFLAGS & _BV(SPI_IF_bp)));
+        r = SPI0_DATA;
+        return r;
+    }
+        #define HSPI_WRITE(b)        {SPI0_DATA = (b); while(!(SPI0_INTFLAGS & _BV(SPI_IF_bp)));}
+        // #define HSPI_READ()          _avr_spi_read()
+    #elif defined (__AVR__) || defined(TEENSYDUINO)
         static inline uint8_t _avr_spi_read(void) __attribute__((always_inline));
         static inline uint8_t _avr_spi_read(void) {
             uint8_t r = 0;
