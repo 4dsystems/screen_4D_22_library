@@ -25,7 +25,7 @@
 #include "gfxfont.h"
 
 #if defined(ARDUINO_STM32_FEATHER) || defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32F1) || defined(STM32F1)
-typedef volatile uint32 RwReg;
+typedef volatile uint32_t RwReg;
 #endif
 #if defined(ARDUINO_FEATHER52)
 typedef volatile uint32_t RwReg;
