@@ -9,7 +9,7 @@
 #define TFT_CS  PA0 // SS
 #define TFT_SDI PA7 // MOSI
 #define TFT_CLK PA5 // SCK
-#define TFT_LED 0 // 0 if wired to +5V directly
+#define TFT_LED 0   // 0 if wired to +5V directly
 #elif defined(ESP8266)
 #define TFT_RST 4   // D2
 #define TFT_RS  5   // D1
@@ -22,10 +22,11 @@
 #define TFT_RST 26  // IO 26
 #define TFT_RS  25  // IO 25
 #define TFT_CLK 14  // HSPI-SCK
-//#define TFT_SDO 12  // HSPI-MISO
+// #define TFT_SDO 12  // HSPI-MISO
 #define TFT_SDI 13  // HSPI-MOSI
 #define TFT_CS  15  // HSPI-SS0
-#define TFT_LED 0 // 0 if wired to +5V directly
+#define TFT_LED 0   // 0 if wired to +5V directly
+SPIClass hspi(HSPI);
 #else
 #define TFT_RST 8
 #define TFT_RS  9
@@ -39,8 +40,7 @@
 
 #define ROTATE_ANGLE 10 // Angle in degrees to rotate the triangle
 
-struct _point
-{
+struct _point {
     int16_t x;
     int16_t y;
 };
@@ -53,7 +53,12 @@ _point c1, c2, c3, cc;
 
 // Setup
 void setup() {
+#if defined(ESP32)
+  hspi.begin();
+  tft.begin(hspi);
+#else
   tft.begin();
+#endif
 
   // Define triangle start coordinates
   c1.x = 30;  c1.y = 30;

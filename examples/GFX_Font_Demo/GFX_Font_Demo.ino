@@ -31,7 +31,8 @@
 //#define TFT_SDO 12  // HSPI-MISO
 #define TFT_SDI 13  // HSPI-MOSI
 #define TFT_CS  15  // HSPI-SS0
-#define TFT_LED 0 // 0 if wired to +5V directly
+#define TFT_LED 0   // 0 if wired to +5V directly
+SPIClass hspi(HSPI);
 #else
 #define TFT_RST 8
 #define TFT_RS  9
@@ -53,7 +54,12 @@ int16_t x=0, y=0, w, h;
 
 // Setup
 void setup() {
+#if defined(ESP32)
+  hspi.begin();
+  tft.begin(hspi);
+#else
   tft.begin();
+#endif
   tft.clear();
 
   // Draw first string in big font

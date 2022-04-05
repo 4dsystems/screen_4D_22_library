@@ -8,7 +8,7 @@
 #define TFT_CS  PA0 // SS
 #define TFT_SDI PA7 // MOSI
 #define TFT_CLK PA5 // SCK
-#define TFT_LED 0 // 0 if wired to +5V directly
+#define TFT_LED 0   // 0 if wired to +5V directly
 #elif defined(ESP8266)
 #define TFT_RST 4   // D2
 #define TFT_RS  5   // D1

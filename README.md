@@ -5,7 +5,7 @@ TFT_22_ILI9225
 
 Version | Release Date | Description
 ------- | ------------ | -----------
-[v1.4.4](https://github.com/Nkawu/TFT_22_ILI9225/releases/tag/v1.4.4) | 2020-07-19 | Add support for Arduino Nano Every ([charclo](https://github.com/charclo))
+[v1.4.5](https://github.com/Nkawu/TFT_22_ILI9225/releases/tag/v1.4.5) | 2022-02-05 | Update examples for ESP32
 
 ## Introduction
 
@@ -25,7 +25,7 @@ ILI9341 driver.*
 * Include Library
 * Manage Libraries...
 * In the resulting **Library Manager** dialog:
-* Enter **"9225"** in the search filter field *(Filter your search...)*
+* Enter **"ILI9225"** in the search filter field *(Filter your search...)*
 * Select **TFT_22_ILI9225"** in the list
 * Click the **Install** button
 
